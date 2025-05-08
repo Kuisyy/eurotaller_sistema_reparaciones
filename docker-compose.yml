@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:latest
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-luis123}
+      POSTGRES_DB: ${DB_NAME:-eurotaller}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    networks:
+      - eurotaller_network
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  db_data:
+networks:
+  eurotaller_network:
+    driver: bridge
