@@ -1,27 +1,67 @@
-import db from '../config/db_config.js'; 
+import db from '../config/db_config.js';
 
-const createClientTable = async () => {
+const getAll = async () => {
+    try {
+        const clients = await db.any('SELECT * FROM clients');
+        return clients;
+    } catch (error) {
+        throw error; // Propaga el error para que lo maneje el controlador
+    }
+};
+
+const getById = async (id) => {
+    try {
+        const client = await db.oneOrNone('SELECT * FROM clients WHERE client_id = $1', [id]);
+        return client;
+    } catch (error) {
+        throw error;
+    }
+};
+
+const create = async (clientData) => {
   try {
-    await db.none(`
-      CREATE TABLE IF NOT EXISTS clients (
-        client_id SERIAL PRIMARY KEY,
-        name VARCHAR(100) NOT NULL,
-        address VARCHAR(255),
-        postal_code VARCHAR(10),
-        city VARCHAR(50),
-        province VARCHAR(50),
-        country VARCHAR(50) DEFAULT 'España',
-        nif VARCHAR(20) UNIQUE NOT NULL,
-        phone VARCHAR(20),
-        email VARCHAR(100),
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP WITH TIME ZONE
-      );
-    `);
-    console.log('Tabla de clientes creada o ya existente.');
+    const { name, address, postal_code, city, province, country, nif, phone, email } = clientData;
+    const newClient = await db.one(
+      `INSERT INTO clients (name, address, postal_code, city, province, country, nif, phone, email)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+       RETURNING *`,
+      [name, address, postal_code, city, province, country, nif, phone, email]
+    );
+    return newClient;
   } catch (error) {
-    console.error('Error al crear la tabla de clientes:', error);
+    throw error;
   }
 };
 
-export default { createClientTable };
+const update = async (id, clientData) => {
+    try {
+        const { name, address, postal_code, city, province, country, nif, phone, email } = clientData;
+        const updatedClient = await db.oneOrNone(
+            `UPDATE clients SET name = $1, address = $2, postal_code = $3, city = $4, province = $5, 
+             country = $6, nif = $7, phone = $8, email = $9, updated_at = CURRENT_TIMESTAMP
+             WHERE client_id = $10
+             RETURNING *`,
+            [name, address, postal_code, city, province, country, nif, phone, email, id]
+        );
+        return updatedClient;
+    } catch (error) {
+        throw error;
+    }
+};
+
+const deleteClient = async (id) => {
+    try {
+        const deleted = await db.oneOrNone('DELETE FROM clients WHERE client_id = $1 RETURNING *', [id]);
+        return deleted ? true : false; // Devuelve true si se eliminó, false si no se encontró
+    } catch (error) {
+        throw error;
+    }
+};
+
+export default {
+    getAll,
+    getById,
+    create,
+    update,
+    delete: deleteClient,
+};
