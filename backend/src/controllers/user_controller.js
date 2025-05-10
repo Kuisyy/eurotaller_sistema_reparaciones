@@ -1,5 +1,5 @@
 import userModel from '../models/user_model.js';
-import bcrypt from 'bcrypt'; // Importa bcrypt para hashear contraseñas
+import bcrypt from 'bcryptjs'; // Importa bcrypt para hashear contraseñas
 
 // Función para obtener todos los usuarios
 const getAllUsers = async (req, res) => {
@@ -16,6 +16,21 @@ const getUserById = async (req, res) => {
   const { id } = req.params;
   try {
     const user = await userModel.getUserById(id);
+    if (user) {
+      res.status(200).json(user);
+    } else {
+      res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener el usuario' });
+  }
+};
+
+// Función para obtener un usuario por email
+const getUserByEmail = async (req, res) => {
+  const { email } = req.params;
+  try {
+    const user = await userModel.getUserByEmail(email);
     if (user) {
       res.status(200).json(user);
     } else {
