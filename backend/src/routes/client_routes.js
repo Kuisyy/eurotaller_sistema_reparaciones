@@ -1,13 +1,13 @@
 import express from 'express';
-import clientController from '../controllers/client_controller.js'; 
+import clientController from '../controllers/client_controller.js';
+import authMiddleware from '../middleware/auth_middleware.js';
+import { isClient } from '../middleware/role_middleware.js';
 
 const router = express.Router();
 
-// Define las rutas y las asocia a las funciones del controlador
-router.get('/', clientController.getAllClients);       
-router.get('/:id', clientController.getClientById);    
-router.post('/', clientController.createClient);     
-router.put('/:id', clientController.updateClient);    
-router.delete('/:id', clientController.deleteClient); 
+router.use(authMiddleware, isClient);
+
+router.get('/me', clientController.getClientById);
+router.put('/me', clientController.updateClient);
 
 export default router;

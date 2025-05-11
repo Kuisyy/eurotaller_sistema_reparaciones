@@ -46,7 +46,7 @@ const createUser = async (req, res) => {
   const userData = req.body;
   try {
     // Hashear la contraseña antes de guardarla
-    const hashedPassword = await bcrypt.hash(userData.password, 10); // 10 es el costo del hash
+    const hashedPassword = await bcrypt.hash(userData.password, 10); 
     userData.password = hashedPassword;
     const newUser = await userModel.createUser(userData);
     res.status(201).json(newUser);
@@ -94,6 +94,7 @@ const deleteUser = async (req, res) => {
 export default {
   getAllUsers,
   getUserById,
+  getUserByEmail,
   createUser,
   updateUser,
   deleteUser,

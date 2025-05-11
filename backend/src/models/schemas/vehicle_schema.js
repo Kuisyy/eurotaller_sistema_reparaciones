@@ -15,7 +15,6 @@ const createVehicleTable = async () => {
             year_of_manufacture INTEGER, -- Año de fabricación
             mileage INTEGER,             -- Kilometraje actual
             color VARCHAR(30),           -- Color del vehículo
-            transmission VARCHAR(20),    -- Tipo de transmisión (ej., Manual, Automática)
             fuel_type VARCHAR(20),       -- Tipo de combustible (ej., Gasolina, Diésel) - redundante si engine_type es detallado
             notes TEXT,                  -- Notas adicionales sobre el vehículo
             created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,

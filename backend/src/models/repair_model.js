@@ -57,10 +57,41 @@ const deleteRepair = async (id) => {
   }
 };
 
+const getRepairsByClientId = async (client_id) => {
+  try {
+    const repairs = await db.any('SELECT * FROM repairs WHERE client_id = $1', [client_id]);
+    return repairs;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getRepairsByVehicleId = async (vehicle_id) => {
+  try {
+    const repairs = await db.any('SELECT * FROM repairs WHERE vehicle_id = $1', [vehicle_id]);
+    return repairs;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getRepairsByWorkerId = async (worker_id) => {
+  try {
+    const repairs = await db.any('SELECT * FROM repairs WHERE worker_id = $1', [worker_id]);
+    return repairs;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
 export default {
   getAllRepairs,
   getRepairById,
   createRepair,
   updateRepair,
   delete: deleteRepair,
+  getRepairsByClientId,
+  getRepairsByVehicleId,
+  getRepairsByWorkerId,
 };

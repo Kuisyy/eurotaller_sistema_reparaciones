@@ -21,11 +21,11 @@ const getUserType = async (user_id) => {
       return 'admin';  // El usuario es un administrador
     }
 
-    // Si no se encuentra en ninguna de las tablas, el tipo de usuario no es válido
-    return null;  // Si el usuario no está en ninguna tabla, retornamos null
+   
+    return null;  
   } catch (error) {
     console.error('Error al obtener el tipo de usuario:', error);
-    throw error;  // Propagamos el error para que lo maneje el controlador
+    throw error;  
   }
 };
 

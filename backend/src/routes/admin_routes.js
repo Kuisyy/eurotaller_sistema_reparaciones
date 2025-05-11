@@ -3,7 +3,7 @@ import adminController from '../controllers/admin_controller.js';
 
 const router = express.Router();
 
-router.get('/', adminController.getAdmin); // Cambiado a getAdmin
+router.get('/', adminController.getAdmin); 
 router.post('/', adminController.createAdmin);
 router.put('/:id', adminController.updateAdmin);
 router.delete('/:id', adminController.deleteAdmin);

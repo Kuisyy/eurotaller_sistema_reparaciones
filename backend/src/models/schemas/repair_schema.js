@@ -10,7 +10,6 @@ const createRepairTable = async () => {
         worker_id INTEGER NOT NULL,
         description TEXT NOT NULL,
         date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-        total_amount DECIMAL(10, 2) NOT NULL,
         status VARCHAR(20) DEFAULT 'Pendiente',
         notes TEXT,
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,

@@ -62,10 +62,44 @@ const deleteRepair = async (req, res) => {
   }
 };
 
+const getRepairsByClientId = async (req, res) => {
+  const { client_id } = req.params;
+  try {
+    const repairs = await repairModel.getRepairsByClientId(client_id);
+    res.status(200).json(repairs);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener las reparaciones del cliente' });
+  }
+};
+
+const getRepairsByVehicleId = async (req, res) => {
+  const { vehicle_id } = req.params;
+  try {
+    const repairs = await repairModel.getRepairsByVehicleId(vehicle_id);
+    res.status(200).json(repairs);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener las reparaciones del vehículo' });
+  }
+};
+
+const getRepairsByWorkerId = async (req, res) => {
+  const { worker_id } = req.params;
+  try {
+    const repairs = await repairModel.getRepairsByWorkerId(worker_id);
+    res.status(200).json(repairs);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener las reparaciones del trabajador' });
+  }
+};
+
+
 export default {
   getAllRepairs,
   getRepairById,
   createRepair,
   updateRepair,
   deleteRepair,
+  getRepairsByClientId,
+  getRepairsByVehicleId,
+  getRepairsByWorkerId,
 };
