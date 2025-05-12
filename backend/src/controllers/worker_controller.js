@@ -23,13 +23,12 @@ const getWorkerById = async (req, res) => {
   }
 };
 
-const createWorker = async (req, res) => {
-  const workerData = req.body;
+const createWorker = async (workerData) => {
   try {
     const newWorker = await workerModel.createWorker(workerData);
-    res.status(201).json(newWorker);
+    return newWorker; // Devuelve el resultado, no la respuesta HTTP
   } catch (error) {
-    res.status(500).json({ error: 'Error al crear el trabajador' });
+    throw error;
   }
 };
 

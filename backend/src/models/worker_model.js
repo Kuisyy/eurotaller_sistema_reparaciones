@@ -3,7 +3,7 @@ import db from '../config/db_config.js';
 const getAllWorkers = async () => {
   try {
     const workers = await db.any(
-      `SELECT w.worker_id, u.name, u.email, w.role, w.hire_date 
+      `SELECT w.worker_id, u.name, u.email, w.role 
        FROM workers w
        JOIN users u ON w.user_id = u.user_id`
     );
@@ -16,7 +16,7 @@ const getAllWorkers = async () => {
 const getWorkerById = async (id) => {
   try {
     const worker = await db.oneOrNone(
-      `SELECT w.worker_id, u.name, u.email, w.role, w.hire_date 
+      `SELECT w.worker_id, u.name, u.email, w.role 
        FROM workers w
        JOIN users u ON w.user_id = u.user_id
        WHERE w.worker_id = $1`,
@@ -28,14 +28,28 @@ const getWorkerById = async (id) => {
   }
 };
 
+const getWorkerByUserId = async (userId) => {
+  try {
+    const worker = await db.oneOrNone(
+      `SELECT w.worker_id
+       FROM workers w
+       WHERE w.user_id = $1`,
+      [userId]
+    );
+    return worker;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const createWorker = async (workerData) => {
   try {
-    const { user_id, role, hire_date } = workerData;
+    const { user_id, role } = workerData;
      const newWorker = await db.one(
-      `INSERT INTO workers (user_id, role, hire_date) 
-       VALUES ($1, $2, $3) 
-       RETURNING worker_id, user_id, role, hire_date`,
-      [user_id, role, hire_date]
+      `INSERT INTO workers (user_id, role) 
+       VALUES ($1, $2) 
+       RETURNING worker_id, user_id, role`,
+      [user_id, role]
     );
     return newWorker;
   } catch (error) {
@@ -45,13 +59,13 @@ const createWorker = async (workerData) => {
 
 const updateWorker = async (id, workerData) => {
   try {
-    const { user_id, role, hire_date } = workerData;
+    const {  role } = workerData;
     const updatedWorker = await db.oneOrNone(
       `UPDATE workers 
-       SET user_id = $1, role = $2, hire_date = $3
-       WHERE worker_id = $4
-       RETURNING worker_id, user_id, role, hire_date`,
-      [user_id, role, hire_date, id]
+       SET  role = $2
+       WHERE worker_id = $1
+       RETURNING worker_id, user_id, role`,
+      [id, role]
     );
     return updatedWorker;
   } catch (error) {
@@ -74,4 +88,5 @@ export default {
   createWorker,
   updateWorker,
   deleteWorker,
+  getWorkerByUserId
 };

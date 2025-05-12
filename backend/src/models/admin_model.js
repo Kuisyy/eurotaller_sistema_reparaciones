@@ -13,6 +13,21 @@ const getAdmin = async () => {
   }
 };
 
+const getAdminByUserId = async (userId) => {
+  try {
+    const admin = await db.oneOrNone(
+      `SELECT a.admin_id
+       FROM admin a
+       WHERE a.user_id = $1`,
+      [userId]
+    );
+    return admin;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
 const createAdmin = async (adminData) => {
   try {
     const { user_id, level } = adminData;
@@ -30,13 +45,13 @@ const createAdmin = async (adminData) => {
 
 const updateAdmin = async (id, adminData) => {
   try {
-    const { user_id, level } = adminData;
+    const { level } = adminData;
     const updatedAdmin = await db.oneOrNone(
       `UPDATE admin 
-       SET user_id = $1, level = $2
-       WHERE admin_id = $3
+       SET  level = $2
+       WHERE admin_id = $1
        RETURNING admin_id, user_id, level`,
-      [user_id, level, id]
+      [id, level]
     );
     return updatedAdmin;
   } catch (error) {
@@ -58,4 +73,5 @@ export default {
   createAdmin,
   updateAdmin,
   deleteAdmin,
+  getAdminByUserId
 };

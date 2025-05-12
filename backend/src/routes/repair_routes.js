@@ -1,7 +1,6 @@
 import express from 'express';
 import repairController from '../controllers/repair_controller.js';
 import authMiddleware from '../middleware/auth_middleware.js';
-import roleMiddleware from '../middleware/role_middleware.js';
 
 const router = express.Router();
 

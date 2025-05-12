@@ -9,13 +9,12 @@ const getAdmin = async (req, res) => {
   }
 };
 
-const createAdmin = async (req, res) => {
-  const adminData = req.body;
+const createAdmin = async (adminData) => {
   try {
     const newAdmin = await adminModel.createAdmin(adminData);
-    res.status(201).json(newAdmin);
+    return newAdmin; // Devuelve el resultado, no la respuesta HTTP
   } catch (error) {
-    res.status(500).json({ error: 'Error al crear el administrador' });
+    throw error;
   }
 };
 

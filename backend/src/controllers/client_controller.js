@@ -26,15 +26,14 @@ const getClientById = async (req, res) => {
 };
 
 // Función para crear un nuevo cliente
-const createClient = async (req, res) => {
-    const clientData = req.body; 
+const createClient = async (clientData) => {
     try {
-        const newClient = await clientModel.create(clientData);
-        res.status(201).json(newClient); // 201 Created
+      const newClient = await clientModel.createClient(clientData);
+      return newClient; // Devuelve el resultado, no la respuesta HTTP
     } catch (error) {
-        res.status(500).json({ error: 'Error al crear el cliente' });
+      throw error;
     }
-};
+  };
 
 // Función para actualizar un cliente
 const updateClient = async (req, res) => {
