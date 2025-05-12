@@ -1,13 +1,15 @@
 import express from 'express';
 import clientController from '../controllers/client_controller.js';
+import repairController from '../controllers/repair_controller.js'
 import authMiddleware from '../middleware/auth_middleware.js';
-import { isClient } from '../middleware/role_middleware.js';
 
 const router = express.Router();
 
-router.use(authMiddleware, isClient);
+router.use(authMiddleware);
 
-router.get('/me', clientController.getClientById);
-router.put('/me', clientController.updateClient);
+router.get('/:id', clientController.getClientById);
+router.put('/update/:id', clientController.updateClient);
+router.get('/repairs', repairController.getRepairsByClientId);
+
 
 export default router;

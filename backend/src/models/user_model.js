@@ -20,7 +20,7 @@ const getUserById = async (id) => {
 
 const getUserByEmail = async (email) => {
   try {
-    const user = await db.oneOrNone('SELECT user_id, name, email, created_at, updated_at FROM users WHERE email = $1', [email]);
+    const user = await db.oneOrNone('SELECT user_id,email, password  FROM users WHERE email = $1', [email]);
     return user;
   } catch (error) {
     throw error;

@@ -14,7 +14,7 @@ const getAllClients = async (req, res) => {
 const getClientById = async (req, res) => {
     const { id } = req.params;
     try {
-        const client = await clientModel.getById(id);
+        const client = await clientModel.getClientByUserId(id);
         if (client) {
             res.status(200).json(client);
         } else {
@@ -26,21 +26,22 @@ const getClientById = async (req, res) => {
 };
 
 // Función para crear un nuevo cliente
-const createClient = async (clientData) => {
+const createClient = async (req, res) => {
+    const clientData = req.body; 
     try {
-      const newClient = await clientModel.createClient(clientData);
-      return newClient; // Devuelve el resultado, no la respuesta HTTP
+        const newClient = await clientModel.createClient(clientData);
+        res.status(201).json(newClient); // 201 Created
     } catch (error) {
-      throw error;
+        res.status(500).json({ error: 'Error al crear el cliente' });
     }
-  };
+};
 
 // Función para actualizar un cliente
 const updateClient = async (req, res) => {
     const { id } = req.params;
     const clientData = req.body;
     try {
-        const updatedClient = await clientModel.update(id, clientData);
+        const updatedClient = await clientModel.updateClient(id, clientData);
         if (updatedClient) {
             res.status(200).json(updatedClient);
         } else {

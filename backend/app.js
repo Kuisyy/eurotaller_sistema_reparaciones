@@ -1,8 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import userSchema from './src/models/schemas/user_schema.js';
-import userRoutes from './src/routes/user_routes.js';
 import workerRoutes from './src/routes/worker_routes.js';
 import adminRoutes from './src/routes/admin_routes.js';
 import clientSchema from './src/models/schemas/client_schema.js';
@@ -15,14 +15,12 @@ import vehicleRoutes from './src/routes/vehicle_routes.js';
 import repairRoutes from './src/routes/repair_routes.js';
 import authRoutes from './src/routes/auth_routes.js';
 
-
-
-
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 // Crear las tablas en el orden correcto
 async function createTables() {
@@ -44,14 +42,12 @@ async function createTables() {
 createTables()
   .then(() => {
     // Usa las rutas
-    app.use('/users', userRoutes);
-    app.use('/admin', adminRoutes);
-    app.use('/worker', workerRoutes);
+    app.use('/auth', authRoutes);
     app.use('/client', clientRoutes);
     app.use('/vehicle', vehicleRoutes);
     app.use('/repair', repairRoutes);
-    app.use('/auth', authRoutes);
-    
+    app.use('/worker', workerRoutes);
+    app.use('/admin', adminRoutes);
 
     app.get('/', (req, res) => {
       res.send('¡El backend de EuroTaller está funcionando!');

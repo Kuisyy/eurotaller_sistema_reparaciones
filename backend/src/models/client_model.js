@@ -20,7 +20,7 @@ const getClientById = async (id) => {
 
 const getClientByUserId = async (userId) => {
   try {
-    const client = await db.oneOrNone('SELECT * FROM clients WHERE user_id = $1', [userId]);
+    const client = await db.oneOrNone('SELECT * FROM clients WHERE client_id = $1', [userId]);
     return client;
   } catch (error) {
     throw error;

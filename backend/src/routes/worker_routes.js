@@ -9,6 +9,6 @@ const router = express.Router();
 router.use(authMiddleware, isWorker);
 
 router.get('/me', workerController.getWorkerById);
-router.get('/repairs/:workerid', repairController.getRepairsByWorkerId);
+router.get('/repairs', repairController.getRepairsByWorkerId);
 
 export default router;

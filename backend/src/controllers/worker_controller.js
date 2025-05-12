@@ -10,9 +10,10 @@ const getAllWorkers = async (req, res) => {
 };
 
 const getWorkerById = async (req, res) => {
-  const { id } = req.params;
   try {
-    const worker = await workerModel.getWorkerById(id);
+    const workerId = req.user.userId; 
+
+    const worker = await workerModel.getWorkerById(workerId);
     if (worker) {
       res.status(200).json(worker);
     } else {
@@ -23,12 +24,13 @@ const getWorkerById = async (req, res) => {
   }
 };
 
-const createWorker = async (workerData) => {
+const createWorker = async (req, res) => {
+  const workerData = req.body;
   try {
     const newWorker = await workerModel.createWorker(workerData);
-    return newWorker; // Devuelve el resultado, no la respuesta HTTP
+    res.status(201).json(newWorker);
   } catch (error) {
-    throw error;
+    res.status(500).json({ error: 'Error al crear el trabajador' });
   }
 };
 

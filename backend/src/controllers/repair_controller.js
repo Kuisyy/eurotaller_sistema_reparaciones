@@ -63,7 +63,7 @@ const deleteRepair = async (req, res) => {
 };
 
 const getRepairsByClientId = async (req, res) => {
-  const { client_id } = req.params;
+  const { client_id } = req.user.roleId;
   try {
     const repairs = await repairModel.getRepairsByClientId(client_id);
     res.status(200).json(repairs);
@@ -83,7 +83,7 @@ const getRepairsByVehicleId = async (req, res) => {
 };
 
 const getRepairsByWorkerId = async (req, res) => {
-  const { worker_id } = req.params;
+  const { worker_id } = req.user.roleId;
   try {
     const repairs = await repairModel.getRepairsByWorkerId(worker_id);
     res.status(200).json(repairs);

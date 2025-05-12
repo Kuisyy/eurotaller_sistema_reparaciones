@@ -7,6 +7,9 @@ const router = express.Router();
 router.post('/register', authController.register);
 
 // Ruta para el inicio de sesión de usuarios
-// router.post('/login', authController.login);
+ router.post('/login', authController.login);
+
+ router.post('/logout', authController.logout);
+
 
 export default router;
