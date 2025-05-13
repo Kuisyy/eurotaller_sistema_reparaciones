@@ -1,25 +1,13 @@
 import db from '../config/db_config.js';
 
-const getAdmin = async () => {
-  try {
-    const admin = await db.oneOrNone(
-      `SELECT a.admin_id, u.name, u.email, a.level
-       FROM admin a
-       JOIN users u ON a.user_id = u.user_id`
-    );
-    return admin;
-  } catch (error) {
-    throw error;
-  }
-};
-
 const getAdminByUserId = async (userId) => {
   try {
     const admin = await db.oneOrNone(
-      `SELECT a.admin_id
-       FROM admin a
-       WHERE a.user_id = $1`,
-      [userId]
+      `SELECT a.admin_id, u.name, u.email, u.role AS user_role
+      FROM admin a
+      JOIN users u ON a.user_id = u.user_id
+      WHERE a.user_id = $1`,
+     [userId]
     );
     return admin;
   } catch (error) {
@@ -27,33 +15,31 @@ const getAdminByUserId = async (userId) => {
   }
 };
 
-
-const createAdmin = async (adminData) => {
+const getAdminById = async (id) => {
   try {
-    const { user_id, level } = adminData;
-    const newAdmin = await db.one(
-      `INSERT INTO admin (user_id, level) 
-       VALUES ($1, $2) 
-       RETURNING admin_id, user_id, level`,
-      [user_id, level]
+    const admin = await db.oneOrNone(
+      `SELECT a.admin_id, u.name, u.email, u.role AS user_role
+       FROM admin a
+       JOIN users u ON a.user_id = u.user_id
+       WHERE a.admin_id = $1`,
+      [id]
     );
-    return newAdmin;
+    return admin;
   } catch (error) {
     throw error;
   }
 };
 
-const updateAdmin = async (id, adminData) => {
+const createAdmin = async (adminData) => {
   try {
-    const { level } = adminData;
-    const updatedAdmin = await db.oneOrNone(
-      `UPDATE admin 
-       SET  level = $2
-       WHERE admin_id = $1
-       RETURNING admin_id, user_id, level`,
-      [id, level]
+    const { user_id } = adminData; // Solo necesitamos el user_id
+    const newAdmin = await db.one(
+      `INSERT INTO admin (user_id)
+       VALUES ($1)
+       RETURNING admin_id, user_id`,
+      [user_id]
     );
-    return updatedAdmin;
+    return newAdmin;
   } catch (error) {
     throw error;
   }
@@ -69,9 +55,8 @@ const deleteAdmin = async (id) => {
 };
 
 export default {
-  getAdmin,
   createAdmin,
-  updateAdmin,
   deleteAdmin,
-  getAdminByUserId
+  getAdminByUserId,
+  getAdminById
 };

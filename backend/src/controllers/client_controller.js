@@ -11,8 +11,8 @@ const getAllClients = async (req, res) => {
 };
 
 // Función para obtener un cliente por ID
-const getClientById = async (req, res) => {
-    const { id } = req.params;
+const getClientMe = async (req, res) => {
+    const  id  = req.user.userId;
     try {
         const client = await clientModel.getClientByUserId(id);
         if (client) {
@@ -27,13 +27,27 @@ const getClientById = async (req, res) => {
 
 // Función para crear un nuevo cliente
 const createClient = async (req, res) => {
-    const clientData = req.body; 
     try {
-        const newClient = await clientModel.createClient(clientData);
-        res.status(201).json(newClient); // 201 Created
-    } catch (error) {
-        res.status(500).json({ error: 'Error al crear el cliente' });
-    }
+        const userData = {
+            name: req.body.name,
+            email: req.body.email,
+            password: req.body.password,
+            role: req.body.role
+        };
+        const clientData = {
+          address: req.body.address,
+          postal_code: req.body.postal_code,
+          city: req.body.city,
+          province: req.body.province,
+          country: req.body.country,
+          nif: req.body.nif,
+          phone: req.body.phone
+        };
+        const newClient = await clientModel.createClient(clientData, userData);
+        res.status(201).json(newClient);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
 };
 
 // Función para actualizar un cliente
@@ -69,7 +83,7 @@ const deleteClient = async (req, res) => {
 
 export default {
     getAllClients,
-    getClientById,
+    getClientMe,
     createClient,
     updateClient,
     deleteClient,

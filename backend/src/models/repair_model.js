@@ -20,12 +20,12 @@ const getRepairById = async (id) => {
 
 const createRepair = async (repairData) => {
   try {
-    const { vehicle_id, client_id, description, date, total_amount, status, notes } = repairData;
+    const { vehicle_id, client_id, worker_id, description, date, status, notes } = repairData;
     const newRepair = await db.one(
-      `INSERT INTO repairs (vehicle_id, client_id, description, date, total_amount, status, notes)
+      `INSERT INTO repairs (vehicle_id, client_id, worker_id, description, date, status, notes)
        VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING *`,
-      [vehicle_id, client_id, description, date, total_amount, status, notes]
+      [vehicle_id, client_id, worker_id, description, date, status, notes]
     );
     return newRepair;
   } catch (error) {

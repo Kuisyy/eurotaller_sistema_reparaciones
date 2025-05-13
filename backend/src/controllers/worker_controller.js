@@ -13,7 +13,7 @@ const getWorkerById = async (req, res) => {
   try {
     const workerId = req.user.userId; 
 
-    const worker = await workerModel.getWorkerById(workerId);
+    const worker = await workerModel.getWorkerByUserId(workerId);
     if (worker) {
       res.status(200).json(worker);
     } else {
@@ -25,12 +25,20 @@ const getWorkerById = async (req, res) => {
 };
 
 const createWorker = async (req, res) => {
-  const workerData = req.body;
   try {
-    const newWorker = await workerModel.createWorker(workerData);
+    const userData = {  
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+      role: req.body.role, 
+    };
+    const workerData = { 
+      role: req.body.worker_role, 
+    };
+    const newWorker = await workerModel.createWorker(workerData, userData); // Pasamos ambos objetos
     res.status(201).json(newWorker);
   } catch (error) {
-    res.status(500).json({ error: 'Error al crear el trabajador' });
+    res.status(500).json({ error: error.message });
   }
 };
 

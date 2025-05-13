@@ -6,7 +6,6 @@ const createAdminTable = async () => {
       CREATE TABLE admin (
         admin_id SERIAL PRIMARY KEY,
         user_id INTEGER NOT NULL UNIQUE,
-        level INTEGER,
         FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
       );
     `);

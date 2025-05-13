@@ -2,7 +2,11 @@ import db from '../config/db_config.js';
 
 const getAllClients = async () => {
   try {
-    const clients = await db.any('SELECT * FROM clients');
+    const clients = await db.any(
+      `SELECT c.*, u.role AS user_role
+       FROM clients c
+       JOIN users u ON c.user_id = u.user_id`
+    );
     return clients;
   } catch (error) {
     throw error;
@@ -11,16 +15,28 @@ const getAllClients = async () => {
 
 const getClientById = async (id) => {
   try {
-    const client = await db.oneOrNone('SELECT * FROM clients WHERE client_id = $1', [id]);
+    const client = await db.oneOrNone(
+      `SELECT c.*, u.role AS user_role
+       FROM clients c
+       JOIN users u ON c.user_id = u.user_id
+       WHERE c.user_id = $1`,
+      [id]
+    );
     return client;
   } catch (error) {
     throw error;
   }
 };
 
-const getClientByUserId = async (userId) => {
+const getClientByUserId = async (userId) => { // Cambiamos el nombre de la función
   try {
-    const client = await db.oneOrNone('SELECT * FROM clients WHERE client_id = $1', [userId]);
+    const client = await db.oneOrNone(
+      `SELECT c.*, u.role AS user_role
+       FROM clients c
+       JOIN users u ON c.user_id = u.user_id
+       WHERE c.user_id = $1`,
+      [userId]
+    );
     return client;
   } catch (error) {
     throw error;
@@ -29,12 +45,12 @@ const getClientByUserId = async (userId) => {
 
 const createClient = async (clientData) => {
   try {
-    const { user_id, address, postal_code, city, province, country, nif, phone, email } = clientData;
+    const { user_id, address, postal_code, city, province, country, nif, phone } = clientData;
     const newClient = await db.one(
-      `INSERT INTO clients (user_id, address, postal_code, city, province, country, nif, phone, email)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-       RETURNING *`,
-      [user_id, address, postal_code, city, province, country, nif, phone, email]
+      `INSERT INTO clients (user_id, address, postal_code, city, province, country, nif, phone)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+       RETURNING client_id, user_id, address, postal_code, city, province, country, nif, phone`,
+      [user_id, address, postal_code, city, province, country, nif, phone]
     );
     return newClient;
   } catch (error) {
@@ -44,13 +60,13 @@ const createClient = async (clientData) => {
 
 const updateClient = async (id, clientData) => {
   try {
-    const { address, postal_code, city, province, country, nif, phone, email } = clientData;
+    const { address, postal_code, city, province, country, nif, phone } = clientData;
     const updatedClient = await db.oneOrNone(
-      `UPDATE clients SET  address = $2, postal_code = $3, city = $4, province = $5, 
-             country = $6, nif = $7, phone = $8, email = $9, updated_at = CURRENT_TIMESTAMP
+      `UPDATE clients SET  address = $2, postal_code = $3, city = $4, province = $5,
+             country = $6, nif = $7, phone = $8,updated_at = CURRENT_TIMESTAMP
              WHERE client_id = $1
-             RETURNING *`,
-            [id,  address, postal_code, city, province, country, nif, phone, email]
+             RETURNING client_id, user_id, address, postal_code, city, province, country, nif, phone`,
+      [id, address, postal_code, city, province, country, nif, phone]
     );
     return updatedClient;
   } catch (error) {
@@ -73,5 +89,5 @@ export default {
   createClient,
   updateClient,
   deleteClient,
-  getClientByUserId
+  getClientByUserId,
 };

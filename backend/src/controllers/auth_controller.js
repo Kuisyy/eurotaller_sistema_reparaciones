@@ -13,17 +13,14 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const register = async (req, res) => {
   const userData = req.body;
   try {
-    // 1. Validar datos (¡muy importante, pero lo omitimos para simplificar!)
-    // 2. Hashear la contraseña
     const hashedPassword = await bcrypt.hash(userData.password, 10);
-    // 3. Insertar en la tabla users
     const createdUser = await userModel.createUser({
       name: userData.name,
       email: userData.email,
       password: hashedPassword,
+      role: userData.role, // Incluimos el rol del usuario
     });
     let roleResult;
-    // 4. Insertar en la tabla de rol correspondiente, usando los controladores
     if (userData.role === 'client') {
       roleResult = await clientModel.createClient({
         user_id: createdUser.user_id,
@@ -34,35 +31,18 @@ const register = async (req, res) => {
         country: userData.country,
         nif: userData.nif,
         phone: userData.phone,
-        email: userData.email
-      });
+      }, userData); // Pasamos userData
     } else if (userData.role === 'worker') {
       roleResult = await workerModel.createWorker({
         user_id: createdUser.user_id,
         role: userData.worker_role, // Usamos el nombre correcto del campo
-      });
+      }, userData); // Pasamos userData
     } else if (userData.role === 'admin') {
-      roleResult = await adminModel.createAdmin({
+      roleResult = await adminModel.createAdmin({  // Actualizado para que coincida con el modelo
         user_id: createdUser.user_id,
-        level: userData.level,
-      });
+      }, userData); // Pasamos userData
     }
-    // 5. Generar JWT
-    const token = jwt.sign(
-      { userId: createdUser.user_id, role: userData.role },
-      process.env.JWT_SECRET,
-      { expiresIn: '24h' },
-    );
 
-    res.cookie('auth_token', token, {
-      maxAge: 24 * 60 * 60 * 1000, // 24 horas en milisegundos
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'Strict',
-      path: '/',
-    });
-
-    // 6. Enviar respuesta
     res.status(201).json({
       user: createdUser,
       roleResult,
@@ -84,32 +64,28 @@ const login = async (req, res) => {
       return res.status(401).json({ message: 'Contraseña incorrecta' });
     }
     // 3. Obtener el tipo de usuario (cliente, trabajador, administrador)
-    let role = null; // Rol por defecto
+    let role = user.role; // Obtenemos el rol directamente de la tabla users
     let roleId = null;
-    const client = await clientModel.getClientByUserId(user.user_id);
-    if (client) {
-      roleId = client.client_id;
-      role = 'client';
-    } else {
+    if (role === 'client') {
+      const client = await clientModel.getClientByUserId(user.user_id);
+      if (client) {
+        roleId = client.client_id;
+      }
+    } else if (role === 'worker') {
       const worker = await workerModel.getWorkerByUserId(user.user_id);
       if (worker) {
         roleId = worker.worker_id;
-        role = 'worker';
-      } else {
-        const admin = await adminModel.getAdminByUserId(user.user_id);
-        if (admin) {
-          roleId = admin.admin_id;
-          role = 'admin';
-        } else {
-          role = null;
-        }
+      }
+    } else if (role === 'admin') {
+      const admin = await adminModel.getAdminByUserId(user.user_id);
+      if (admin) {
+        roleId = admin.admin_id;
       }
     }
-        
+
     const payload = {
       userId: user.user_id,
-      role: role,
-      roleId: roleId,
+      role: role
     };
     const options = {
       expiresIn: '24h',
@@ -127,7 +103,8 @@ const login = async (req, res) => {
       user: {
         user_id: user.user_id,
         name: user.name,
-        email: user.email
+        email: user.email,
+        role: user.role  
       }
     });
   } catch (error) {

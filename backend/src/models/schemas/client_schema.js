@@ -13,7 +13,6 @@ const createClientTable = async () => {
         country VARCHAR(50) DEFAULT 'España',
         nif VARCHAR(20) UNIQUE NOT NULL,
         phone VARCHAR(20),
-        email VARCHAR(50),
         FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
       );
     `);

@@ -1,21 +1,33 @@
 import adminModel from '../models/admin_model.js';
 
-const getAdmin = async (req, res) => {
+const getAdminMe = async (req, res) => {
   try {
-    const admin = await adminModel.getAdmin();
+    const adminId = req.user.userId; 
+    const admin = await adminModel.getAdminByUserId(adminId);
+    if (!admin) {
+      return res.status(404).json({ message: 'Administrador no encontrado' });
+    }
     res.status(200).json(admin);
   } catch (error) {
-    res.status(500).json({ error: 'Error al obtener el administrador' });
+    res.status(500).json({ error: error.message });
   }
 };
 
 const createAdmin = async (req, res) => {
-  const adminData = req.user.userId;
   try {
-    const newAdmin = await adminModel.createAdmin(adminData);
+    const userData = {  // Extraemos los datos del usuario
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+      role: req.body.role, // El rol del usuario
+    };
+    const adminData = { // Extraemos los datos del admin
+      user_id: req.body.user_id,
+    };
+    const newAdmin = await adminModel.createAdmin(adminData, userData); // Pasamos ambos objetos
     res.status(201).json(newAdmin);
   } catch (error) {
-    res.status(500).json({ error: 'Error al crear el administrador' });
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -49,7 +61,7 @@ const deleteAdmin = async (req, res) => {
 };
 
 export default {
-  getAdmin,
+  getAdminMe,
   createAdmin,
   updateAdmin,
   deleteAdmin

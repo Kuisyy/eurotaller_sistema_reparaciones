@@ -3,38 +3,17 @@ Sistema web de gestión para EuroTaller, desarrollado para registrar vehículos,
 
 Aquí tienes un ejemplo de cómo se verían los datos JSON que se envían al backend para crear un usuario, según el rol:
 
-Crear un Cliente
+Crear Cliente
 {
-  "name": "Luis Pérez",
-  "email": "luis.perez@example.com",
-  "password": "miContraseñaSegura",
+  "name": "Juan Pérez",
+  "email": "juan@example.com",
+  "password": "password123",
   "role": "client",
-  "address": "Calle Falsa, 123",
-  "postal_code": "12345",
-  "city": "Ejemploville",
-  "province": "Ejemploprovincia",
+  "address": "Calle Principal, 1",
+  "postal_code": "28001",
+  "city": "Madrid",
+  "province": "Madrid",
   "country": "España",
-  "nif": "12345678X",
-  "phone": "911223344"
+  "nif": "12345678A",
+  "phone": "911234567"
 }
-
-Crear un Trabajador
-{
-  "name": "María García",
-  "email": "maria.garcia@example.com",
-  "password": "otraContraseñaSegura",
-  "role": "worker",
-  "worker_role": "Mecánico",
-  "hire_date": "2023-01-15"
-}
-
-Crear un Administrador
-{
-  "name": "Javier López",
-  "email": "javier.lopez@example.com",
-  "password": "contrasenaAdmin",
-  "role": "admin",
-  "level": 1
-}
-
-En el ejemplo, el campo "role" especifica el rol del usuario que se va a crear, y los campos subsiguientes, como "address", "postal_code", "worker_role", y "level", proporcionan detalles específicos para cada rol.

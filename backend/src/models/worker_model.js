@@ -31,8 +31,9 @@ const getWorkerById = async (id) => {
 const getWorkerByUserId = async (userId) => {
   try {
     const worker = await db.oneOrNone(
-      `SELECT w.worker_id
+      `SELECT w.worker_id, u.name, u.email, u.role AS user_role, w.role AS worker_role
        FROM workers w
+       JOIN users u ON w.user_id = u.user_id
        WHERE w.user_id = $1`,
       [userId]
     );

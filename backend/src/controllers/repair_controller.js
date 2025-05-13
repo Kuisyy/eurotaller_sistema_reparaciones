@@ -1,4 +1,5 @@
 import repairModel from '../models/repair_model.js';
+import workerModel from '../models/worker_model.js';
 
 const getAllRepairs = async (req, res) => {
   try {
@@ -24,15 +25,31 @@ const getRepairById = async (req, res) => {
 };
 
 const createRepair = async (req, res) => {
+
   const repairData = req.body;
+  const userIdFromCookie = req.user.userId; 
+
   try {
-    const newRepair = await repairModel.createRepair(repairData);
+
+    const worker = await workerModel.getWorkerByUserId(userIdFromCookie);
+    if (!worker) {
+      return res.status(400).json({ message: 'No se encontró un trabajador asociado al usuario.' });
+    }
+    const workerId = worker.worker_id;
+
+    const newRepairData = {
+      ...repairData,
+      worker_id: workerId, 
+    };
+
+    // 3. Creamos la reparación
+    const newRepair = await repairModel.createRepair(newRepairData);
     res.status(201).json(newRepair);
   } catch (error) {
-    res.status(500).json({ error: 'Error al crear la reparación' });
+    console.error("Error al crear la reparación:", error);
+    res.status(500).json({ error: 'Error al crear la reparación', details: error.message });
   }
 };
-
 const updateRepair = async (req, res) => {
   const { id } = req.params;
   const repairData = req.body;

@@ -20,12 +20,12 @@ const getVehicleById = async (id) => {
 
 const createVehicle = async (vehicleData) => {
   try {
-    const { client_id, brand, model, registration_number, vin, engine_type, engine_code, year_of_manufacture, mileage, color, transmission, fuel_type, notes } = vehicleData;
+    const { client_id, brand, model, registration_number, vin, engine_type, engine_code, year_of_manufacture, mileage, color, fuel_type, notes } = vehicleData;
     const newVehicle = await db.one(
-      `INSERT INTO vehicles (client_id, brand, model, registration_number, vin, engine_type, engine_code, year_of_manufacture, mileage, color, transmission, fuel_type, notes)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+      `INSERT INTO vehicles (client_id, brand, model, registration_number, vin, engine_type, engine_code, year_of_manufacture, mileage, color, fuel_type, notes)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
        RETURNING *`,
-      [client_id, brand, model, registration_number, vin, engine_type, engine_code, year_of_manufacture, mileage, color, transmission, fuel_type, notes]
+      [client_id, brand, model, registration_number, vin, engine_type, engine_code, year_of_manufacture, mileage, color, fuel_type, notes]
     );
     return newVehicle;
   } catch (error) {
@@ -35,13 +35,13 @@ const createVehicle = async (vehicleData) => {
 
 const updateVehicle = async (id, vehicleData) => {
   try {
-    const { client_id, brand, model, registration_number, vin, engine_type, engine_code, year_of_manufacture, mileage, color, transmission, fuel_type, notes } = vehicleData;
+    const { client_id, brand, model, registration_number, vin, engine_type, engine_code, year_of_manufacture, mileage, color, fuel_type, notes } = vehicleData;
     const updatedVehicle = await db.oneOrNone(
       `UPDATE vehicles SET client_id = $1, brand = $2, model = $3, registration_number = $4, vin = $5, engine_type = $6, engine_code = $7, 
-       year_of_manufacture = $8, mileage = $9, color = $10, transmission = $11, fuel_type = $12, notes = $13, updated_at = CURRENT_TIMESTAMP
-       WHERE vehicle_id = $14
+       year_of_manufacture = $8, mileage = $9, color = $10, fuel_type = $11, notes = $12, updated_at = CURRENT_TIMESTAMP
+       WHERE vehicle_id = $13
        RETURNING *`,
-      [client_id, brand, model, registration_number, vin, engine_type, engine_code, year_of_manufacture, mileage, color, transmission, fuel_type, notes, id]
+      [client_id, brand, model, registration_number, vin, engine_type, engine_code, year_of_manufacture, mileage, color, fuel_type, notes, id]
     );
     return updatedVehicle;
   } catch (error) {

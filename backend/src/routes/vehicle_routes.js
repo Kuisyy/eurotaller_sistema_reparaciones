@@ -8,7 +8,7 @@ router.use(authMiddleware);
 
 router.get('/', vehicleController.getAllVehicles);
 router.get('/:id', vehicleController.getVehicleById);
-router.post('/', vehicleController.createVehicle);
+router.post('/create', vehicleController.createVehicle);
 router.put('/:id', vehicleController.updateVehicle);
 router.delete('/:id', vehicleController.deleteVehicle);
 

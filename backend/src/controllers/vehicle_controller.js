@@ -29,9 +29,11 @@ const createVehicle = async (req, res) => {
     const newVehicle = await vehicleModel.createVehicle(vehicleData);
     res.status(201).json(newVehicle);
   } catch (error) {
-    res.status(500).json({ error: 'Error al crear el vehículo' });
+    console.error("Error creating vehicle:", error);
+    res.status(500).json({ error: 'Error al crear el vehículo', details: error.message });
   }
 };
+
 
 const updateVehicle = async (req, res) => {
   const { id } = req.params;
