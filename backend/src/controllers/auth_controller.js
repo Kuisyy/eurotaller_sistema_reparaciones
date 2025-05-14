@@ -85,8 +85,8 @@ const login = async (req, res) => {
 
     const payload = {
       userId: user.user_id,
-      role: role
     };
+
     const options = {
       expiresIn: '24h',
     };
@@ -94,11 +94,12 @@ const login = async (req, res) => {
     // Enviar el JWT como una cookie
     res.cookie('auth_token', token, {
       maxAge: 24 * 60 * 60 * 1000, // 24 horas en milisegundos
-      httpOnly: true, // Importante para seguridad: no accesible desde JavaScript
+      httpOnly: true, // Solo accesible por el servidor
       secure: process.env.NODE_ENV === 'production', // Solo se envía por HTTPS en producción
       sameSite: 'Strict', // Protección contra ataques CSRF
       path: '/',
     });
+    
     return res.status(200).json({ message: 'Inicio de sesión exitoso',
       user: {
         user_id: user.user_id,
