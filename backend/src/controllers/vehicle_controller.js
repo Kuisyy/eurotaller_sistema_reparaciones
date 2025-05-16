@@ -64,10 +64,34 @@ const deleteVehicle = async (req, res) => {
   }
 };
 
+const getVehicleByClientId = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    if (!id) {
+      return res.status(400).json({ message: 'Se requiere el ID del cliente' });
+    }
+
+    const vehicles = await vehicleModel.getVehicleByClientId(id);
+    
+    // Asegurarnos de que siempre devolvemos un array
+    const responseArray = Array.isArray(vehicles) ? vehicles : (vehicles ? [vehicles] : []);
+    
+    res.status(200).json(responseArray);
+  } catch (error) {
+    console.error('Error al obtener vehículos del cliente:', error);
+    res.status(500).json({ 
+      error: 'Error al obtener los vehículos del cliente',
+      details: error.message 
+    });
+  }
+};
+
 export default {
   getAllVehicles,
   getVehicleById,
   createVehicle,
   updateVehicle,
   deleteVehicle,
+  getVehicleByClientId  // Añadir el nuevo método al export
 };

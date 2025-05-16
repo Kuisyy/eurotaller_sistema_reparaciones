@@ -17,3 +17,12 @@ Crear Cliente
   "nif": "12345678A",
   "phone": "911234567"
 }
+
+Crear Worker
+{
+  "name": "Jose Luis",
+  "email": "jl@example.com",
+  "password": "jl123",
+  "role": "worker",
+  "worker_role": "administrativo" 
+}

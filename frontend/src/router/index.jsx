@@ -2,11 +2,11 @@ import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 import LoginPage from "../pages/LoginPage.jsx";
 import Layout from "../layout/Layout.jsx";
 import ClientPage from "../pages/ClientPage.jsx";
-import WorkerPage from "../pages/WorkerPage.jsx";
 import AdminPage from "../pages/AdminPage.jsx";
 import ProtectedRoute from "../components/ProtectedRoute.jsx";
-import CreateClientPage from "../pages/CreateClientPage.jsx";
 import CreateRepairPage from "../pages/CreateRepairPage.jsx";
+import WorkerLayout from "../layout/WorkerLayout.jsx";
+import CreateClientPage from "../pages/CreateClientPage.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -39,15 +39,23 @@ export const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <WorkerPage />,
+            element: <Navigate to="/worker/create-repair" replace />,
           },
           {
             path: 'crear-cliente',
-            element: <CreateClientPage />,
+            element: (
+              <WorkerLayout title="Registrar Nuevo Cliente">
+                <CreateClientPage />
+              </WorkerLayout>
+            ),
           },
           {
-            path: 'crear-reparacion',
-            element: <CreateRepairPage />,
+            path: 'create-repair',
+            element: (
+              <WorkerLayout title="Crear Reparación">
+                <CreateRepairPage />
+              </WorkerLayout>
+            ),
           },
         ],
       },

@@ -6,7 +6,7 @@ import { isWorker } from '../middleware/role_middleware.js';
 
 const router = express.Router();
 
-router.use(authMiddleware, isWorker);
+router.use(authMiddleware);
 
 router.get('/me', workerController.getWorkerById);
 router.get('/repairs', repairController.getRepairsByWorkerId);

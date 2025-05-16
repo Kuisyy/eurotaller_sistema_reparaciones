@@ -58,10 +58,23 @@ const deleteVehicle = async (id) => {
   }
 };
 
+const getVehicleByClientId = async (clientId) => {
+  try {
+    const vehicles = await db.any(
+      'SELECT * FROM vehicles WHERE client_id = $1',
+      [clientId]
+    );
+    return vehicles;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export default {
   getAllVehicles,
   getVehicleById,
   createVehicle,
   updateVehicle,
   delete: deleteVehicle,
+  getVehicleByClientId,
 };

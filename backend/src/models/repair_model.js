@@ -35,12 +35,12 @@ const createRepair = async (repairData) => {
 
 const updateRepair = async (id, repairData) => {
   try {
-    const { vehicle_id, client_id, description, date, total_amount, status, notes } = repairData;
+    const { vehicle_id, client_id, description, date, status, notes } = repairData;
     const updatedRepair = await db.oneOrNone(
-      `UPDATE repairs SET vehicle_id = $1, client_id = $2, description = $3, date = $4, total_amount = $5, status = $6, notes = $7, updated_at = CURRENT_TIMESTAMP
-       WHERE repair_id = $8
+      `UPDATE repairs SET vehicle_id = $1, client_id = $2, description = $3, date = $4, status = $5, notes = $6, updated_at = CURRENT_TIMESTAMP
+       WHERE repair_id = $7
        RETURNING *`,
-      [vehicle_id, client_id, description, date, total_amount, status, notes, id]
+      [vehicle_id, client_id, description, date, status, notes, id]
     );
     return updatedRepair;
   } catch (error) {

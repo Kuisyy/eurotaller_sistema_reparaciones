@@ -63,28 +63,10 @@ const login = async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({ message: 'Contraseña incorrecta' });
     }
-    // 3. Obtener el tipo de usuario (cliente, trabajador, administrador)
-    let role = user.role; // Obtenemos el rol directamente de la tabla users
-    let roleId = null;
-    if (role === 'client') {
-      const client = await clientModel.getClientByUserId(user.user_id);
-      if (client) {
-        roleId = client.client_id;
-      }
-    } else if (role === 'worker') {
-      const worker = await workerModel.getWorkerByUserId(user.user_id);
-      if (worker) {
-        roleId = worker.worker_id;
-      }
-    } else if (role === 'admin') {
-      const admin = await adminModel.getAdminByUserId(user.user_id);
-      if (admin) {
-        roleId = admin.admin_id;
-      }
-    }
-
+    // 3. Obtener el tipo de usuario (cliente, trabajador, administrador) 
     const payload = {
       userId: user.user_id,
+      role:user.role
     };
 
     const options = {

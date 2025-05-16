@@ -1,16 +1,41 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
-import tallerLogo from '../imgs/mechanic.png'; 
+import tallerLogo from '../imgs/mechanic.png';
 
-const LoginPage = ({ className }) => {
+const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  
-  const { login } = useAuth();
+
+  const { login, user, isAuthenticated, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
+
+  // Efecto para redirigir si el usuario ya está autenticado
+  useEffect(() => {
+    if (!authLoading && isAuthenticated && user) {
+      redirectBasedOnRole(user.role);
+    }
+  }, [isAuthenticated, user, authLoading, navigate]);
+
+  // Función para manejar la redirección basada en el rol
+  const redirectBasedOnRole = (role) => {
+    console.log("Redirecting based on role:", role);
+    switch (role) {
+      case 'client':
+        navigate('/client', { replace: true });
+        break;
+      case 'worker':
+        navigate('/worker', { replace: true });
+        break;
+      case 'admin':
+        navigate('/admin', { replace: true });
+        break;
+      default:
+        navigate('/', { replace: true });
+    }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -21,16 +46,8 @@ const LoginPage = ({ className }) => {
       const result = await login(email, password);
       
       if (result.success) {
-        // Redirección basada en el rol
-        if (result.role === 'client') {
-          navigate('/client');
-        } else if (result.role === 'worker') {
-          navigate('/worker');
-        } else if (result.role === 'admin') {
-          navigate('/admin');
-        } else {
-          navigate('/'); // Redirección por defecto
-        }
+        // Si el login es exitoso, redirigimos basado en el rol del usuario
+        redirectBasedOnRole(result.user.role);
       } else {
         setError(result.message || 'Error al iniciar sesión. Por favor, verifica tus credenciales.');
       }
@@ -42,11 +59,22 @@ const LoginPage = ({ className }) => {
     }
   };
 
+  // Mostrar un indicador de carga mientras se verifica la autenticación
+  if (authLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-center">
+          <div className="spinner"></div>
+          <p className="mt-4">Verificando sesión...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       className={
-        "bg-[#f7f9fb] flex flex-col gap-0 items-center justify-center h-screen w-screen relative " +
-        className
+        "bg-[#f7f9fb] flex flex-col gap-0 items-center justify-center h-screen w-screen relative "
       }
     >
       <div
