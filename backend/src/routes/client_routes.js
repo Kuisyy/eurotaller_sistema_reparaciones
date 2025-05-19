@@ -9,7 +9,9 @@ const router = express.Router();
 
 router.use(authMiddleware );
 
+router.get('/all', clientController.getAllClients);
 router.get('/me', clientController.getClientMe);
+router.get('/:id', clientController.getClientById);
 router.put('/update/:id', clientController.updateClient);
 
 export default router;

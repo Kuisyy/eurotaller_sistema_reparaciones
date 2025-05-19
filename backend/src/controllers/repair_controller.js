@@ -30,11 +30,9 @@ const getRepairById = async (req, res) => {
 const createRepair = async (req, res) => {
 
   const repairData = req.body;
-  const user_id = req.body.user_id; 
-
   try {
 
-    const worker = await workerModel.getWorkerByUserId(user_id);
+    const worker = await workerModel.getWorkerById(repairData.worker_id);
     if (!worker) {
       return res.status(400).json({ message: 'No se encontró un trabajador asociado al usuario.' });
     }
@@ -70,7 +68,7 @@ const updateRepair = async (req, res) => {
 };
 
 const deleteRepair = async (req, res) => {
-  const { id } = req.params;
+  const  { id }  = req.params;
   try {
     const deleted = await repairModel.deleteRepair(id);
     if (deleted) {

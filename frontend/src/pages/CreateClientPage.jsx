@@ -1,4 +1,62 @@
+import React, { useState } from 'react';
+import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
+import { useAuth } from '../context/AuthContext.jsx';
+
 const CreateClientPage = ({ className }) => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+    postal_code: '',
+    city: '',
+    province: '',
+    country: 'España',
+    nif: '',
+    password: '',
+    role: 'client',
+  });
+
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const { registerClient, authError, authSuccess } = useAuth(); // Usamos el hook useAuth
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // Llamamos a la función registerClient del contexto
+    const registrationResult = await registerClient(formData);
+
+    if (registrationResult && registrationResult.success) {
+
+      setFormData({ // Limpiar el formulario
+        name: '',
+        email: '',
+        phone: '',
+        address: '',
+        postal_code: '',
+        city: '',
+        province: '',
+        country: 'España',
+        nif: '',
+        password: '',
+        role: 'client',
+      });
+    } else {
+      // Si hay un error, el mensaje de error se mostrará a través del contexto.
+    }
+  };
+
   return (
     <div
       className={
@@ -13,7 +71,8 @@ const CreateClientPage = ({ className }) => {
           </div>
         </div>
         <div className="p-8 flex flex-col gap-6 items-start justify-start self-stretch flex-1 relative">
-          <div
+          <form
+            onSubmit={handleSubmit}
             className="bg-[#ffffff] rounded-xl p-8 flex flex-col gap-6 items-start justify-start self-stretch shrink-0 relative"
             style={{ boxShadow: "0px 2px 12px 0px rgba(0, 0, 0, 0.06)" }}
           >
@@ -25,59 +84,107 @@ const CreateClientPage = ({ className }) => {
                 Completa todos los campos para registrar un nuevo cliente{" "}
               </div>
             </div>
+            {/* Mensajes de error y éxito */}
+            {authError && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <strong className="font-bold">Error!</strong>
+                <span className="block sm:inline">{authError}</span>
+              </div>
+            )}
+              {authSuccess && (
+                <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                  <span className="flex items-center gap-2 sm:inline">
+                    {authSuccess}
+
+                  </span>
+                </div>
+              )}
             <div className="flex flex-col gap-5 items-start justify-start self-stretch shrink-0 relative">
               <div className="flex flex-row gap-4 items-start justify-start self-stretch shrink-0 relative">
                 <div className="flex flex-col gap-2 items-start justify-start flex-1 relative">
                   <div className="text-[#2c2c2c] text-left font-['Inter-Medium',_sans-serif] text-sm leading-[16.8px] font-medium relative self-stretch">
                     Nombre *{" "}
                   </div>
-                  <div className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative">
-                    <div className="text-[#6e6e6e] text-left font-['Inter-Regular',_sans-serif] text-sm leading-[16.8px] font-normal relative">
-                      Introduce el nombre{" "}
-                    </div>
-                  </div>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative"
+                    placeholder="Introduce el nombre"
+                    required
+                  />
                 </div>
-                <div className="flex flex-col gap-2 items-start justify-start flex-1 relative">
-                  <div className="text-[#2c2c2c] text-left font-['Inter-Medium',_sans-serif] text-sm leading-[16.8px] font-medium relative self-stretch">
-                    Apellidos *{" "}
-                  </div>
-                  <div className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative">
-                    <div className="text-[#6e6e6e] text-left font-['Inter-Regular',_sans-serif] text-sm leading-[16.8px] font-normal relative">
-                      Introduce los apellidos{" "}
-                    </div>
-                  </div>
-                </div>
+
               </div>
-              <div className="flex flex-row gap-4 items-start justify-start self-stretch shrink-0 relative">
-                <div className="flex flex-col gap-2 items-start justify-start flex-1 relative">
-                  <div className="text-[#2c2c2c] text-left font-['Inter-Medium',_sans-serif] text-sm leading-[16.8px] font-medium relative self-stretch">
-                    Email *{" "}
-                  </div>
-                  <div className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative">
-                    <div className="text-[#6e6e6e] text-left font-['Inter-Regular',_sans-serif] text-sm leading-[16.8px] font-normal relative">
-                      ejemplo@correo.com{" "}
-                    </div>
-                  </div>
+              <div className="flex flex-col gap-2 items-start justify-start self-stretch shrink-0 relative">
+                <div className="text-[#2c2c2c] text-left font-['Inter-Medium',_sans-serif] text-sm leading-[16.8px] font-medium relative self-stretch">
+                  Email *{" "}
                 </div>
-                <div className="flex flex-col gap-2 items-start justify-start flex-1 relative">
-                  <div className="text-[#2c2c2c] text-left font-['Inter-Medium',_sans-serif] text-sm leading-[16.8px] font-medium relative self-stretch">
-                    Teléfono *{" "}
-                  </div>
-                  <div className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative">
-                    <div className="text-[#6e6e6e] text-left font-['Inter-Regular',_sans-serif] text-sm leading-[16.8px] font-normal relative">
-                      Introduce el teléfono{" "}
-                    </div>
-                  </div>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative"
+                  placeholder="ejemplo@correo.com"
+                  required
+                />
+              </div>
+              <div className="flex flex-col gap-2 items-start justify-start self-stretch shrink-0 relative">
+                <div className="text-[#2c2c2c] text-left font-['Inter-Medium',_sans-serif] text-sm leading-[16.8px] font-medium relative self-stretch">
+                  Teléfono *{" "}
                 </div>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative"
+                  placeholder="Introduce el teléfono"
+                  required
+                />
               </div>
               <div className="flex flex-col gap-2 items-start justify-start self-stretch shrink-0 relative">
                 <div className="text-[#2c2c2c] text-left font-['Inter-Medium',_sans-serif] text-sm leading-[16.8px] font-medium relative self-stretch">
                   Dirección{" "}
                 </div>
-                <div className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative">
-                  <div className="text-[#6e6e6e] text-left font-['Inter-Regular',_sans-serif] text-sm leading-[16.8px] font-normal relative">
-                    Introduce la dirección completa{" "}
+                <input
+                  type="text"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative"
+                  placeholder="Introduce la dirección completa"
+                />
+              </div>
+              <div className="flex flex-row gap-4 items-start justify-start self-stretch shrink-0 relative">
+                <div className="flex flex-col gap-2 items-start justify-start flex-1 relative">
+                  <div className="text-[#2c2c2c] text-left font-['Inter-Medium',_sans-serif] text-sm leading-[16.8px] font-medium relative self-stretch">
+                    Código Postal{" "}
                   </div>
+                  <input
+                    type="text"
+                    name="postal_code"
+                    value={formData.postal_code}
+                    onChange={handleChange}
+                    className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative"
+                    placeholder="Introduce el código postal"
+                  />
+                </div>
+                <div className="flex flex-col gap-2 items-start justify-start flex-1 relative">
+                  <div className="text-[#2c2c2c] text-left font-['Inter-Medium',_sans-serif] text-sm leading-[16.8px] font-medium relative self-stretch">
+                    DNI/NIF *{" "}
+                  </div>
+                  <input
+                    type="text"
+                    name="nif"
+                    value={formData.nif}
+                    onChange={handleChange}
+                    className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative"
+                    placeholder="Introduce el DNI/NIF"
+                    required
+                  />
                 </div>
               </div>
               <div className="flex flex-row gap-4 items-start justify-start self-stretch shrink-0 relative">
@@ -85,37 +192,86 @@ const CreateClientPage = ({ className }) => {
                   <div className="text-[#2c2c2c] text-left font-['Inter-Medium',_sans-serif] text-sm leading-[16.8px] font-medium relative self-stretch">
                     Población *{" "}
                   </div>
-                  <div className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative">
-                    <div className="text-[#6e6e6e] text-left font-['Inter-Regular',_sans-serif] text-sm leading-[16.8px] font-normal relative">
-                      Introduce la población{" "}
-                    </div>
-                  </div>
+                  <input
+                    type="text"
+                    name="city"
+                    value={formData.city}
+                    onChange={handleChange}
+                    className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative"
+                    placeholder="Introduce la población"
+                    required
+                  />
                 </div>
                 <div className="flex flex-col gap-2 items-start justify-start flex-1 relative">
                   <div className="text-[#2c2c2c] text-left font-['Inter-Medium',_sans-serif] text-sm leading-[16.8px] font-medium relative self-stretch">
-                    Código Postal{" "}
+                    Provincia{" "}
                   </div>
-                  <div className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative">
-                    <div className="text-[#6e6e6e] text-left font-['Inter-Regular',_sans-serif] text-sm leading-[16.8px] font-normal relative">
-                      Introduce el código postal{" "}
-                    </div>
+                  <input
+                    type="text"
+                    name="province"
+                    value={formData.province}
+                    onChange={handleChange}
+                    className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative"
+                    placeholder="Introduce la provincia"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col gap-2 items-start justify-start self-stretch shrink-0 relative">
+                <div className="text-[#2c2c2c] text-left font-['Inter-Medium',_sans-serif] text-sm leading-[16.8px] font-medium relative self-stretch">
+                  País *{" "}
+                </div>
+                <input
+                  type="text"
+                  name="country"
+                  value={formData.country}
+                  onChange={handleChange}
+                  className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative"
+                  placeholder="Introduce el país"
+                  required
+                />
+              </div>
+              <div className="flex flex-col gap-2 items-start justify-start self-stretch shrink-0 relative">
+                <div className="text-[#2c2c2c] text-left font-['Inter-Medium',_sans-serif] text-sm leading-[16.8px] font-medium relative self-stretch">
+                  Contraseña *{" "}
+                </div>
+                <div className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative">
+                  <input
+                    type={passwordVisible ? 'text' : 'password'}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className="flex-1 outline-none"
+                    placeholder="Introduce la contraseña"
+                    required
+                  />
+                  <div
+                    className="cursor-pointer pl-2"
+                    onClick={togglePasswordVisibility}
+                  >
+                    {passwordVisible ? <AiFillEye /> : <AiFillEyeInvisible />}
                   </div>
                 </div>
               </div>
             </div>
             <div className="flex flex-row gap-4 items-center justify-end self-stretch shrink-0 relative">
-              <div className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-center shrink-0 w-[120px] h-12 relative">
+              <button
+                type="button"
+                className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-center shrink-0 w-[120px] h-12 relative"
+              >
                 <div className="text-[#6e6e6e] text-left font-['Inter-SemiBold',_sans-serif] text-sm leading-[16.8px] font-semibold relative">
                   Cancelar{" "}
                 </div>
-              </div>
-              <div className="bg-[#005bac] rounded-lg pr-4 pl-4 flex flex-row gap-0 items-center justify-center shrink-0 w-[180px] h-12 relative">
+              </button>
+              <button
+                type="submit"
+                className="bg-[#005bac] rounded-lg pr-4 pl-4 flex flex-row gap-0 items-center justify-center shrink-0 w-[180px] h-12 relative"
+              >
                 <div className="text-[#ffffff] text-left font-['Inter-SemiBold',_sans-serif] text-sm leading-[16.8px] font-semibold relative">
                   Registrar Cliente{" "}
                 </div>
-              </div>
+              </button>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>

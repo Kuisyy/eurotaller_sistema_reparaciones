@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 
 const useRepairForm = () => {
   const [clients, setClients] = useState([]);
+  const [workers, setWorkers] = useState([]);
   const [vehicles, setVehicles] = useState([]);
   const [selectedClient, setSelectedClient] = useState('');
   const [loading, setLoading] = useState(true);
@@ -13,7 +14,7 @@ const useRepairForm = () => {
   const fetchClients = async () => {
     try {
       setLoading(true); // Añadir esto al inicio
-      const response = await fetch(`${API_URL}client`, {
+      const response = await fetch(`${API_URL}client/all`, {
         credentials: 'include'
       });
       
@@ -33,7 +34,7 @@ const useRepairForm = () => {
   const fetchVehiclesByClient = async (clientId) => {
     if (!clientId) {
       setVehicles([]);
-      return;
+      return
     }
 
     try {
@@ -55,9 +56,29 @@ const useRepairForm = () => {
     }
   };
 
+  const fetchWorkers = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${API_URL}worker/all`, {
+        credentials: 'include'
+      });
+      
+      if (!response.ok) throw new Error('Error al obtener los técnicos');
+      
+      const data = await response.json();
+      setWorkers(data);
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Cargar clientes al montar el componente 
   useEffect(() => {
-    fetchClients();
+    Promise.all([fetchClients(), fetchWorkers()])
+      .catch(err => setError(err.message));
   }, []);
 
   // Cargar vehículos cuando se selecciona un cliente
@@ -70,6 +91,7 @@ const useRepairForm = () => {
   return {
     clients,
     vehicles,
+    workers,
     selectedClient,
     setSelectedClient,
     loading,

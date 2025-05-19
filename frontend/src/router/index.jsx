@@ -7,6 +7,8 @@ import ProtectedRoute from "../components/ProtectedRoute.jsx";
 import CreateRepairPage from "../pages/CreateRepairPage.jsx";
 import WorkerLayout from "../layout/WorkerLayout.jsx";
 import CreateClientPage from "../pages/CreateClientPage.jsx";
+import WorkerPage from "../pages/WorkerPage.jsx"; // Añadir esta importación
+import CreateVehiclePage from "../pages/CreateVehiclePage.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -39,10 +41,18 @@ export const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <Navigate to="/worker/create-repair" replace />,
+            element: <Navigate to="repairs" replace />,
           },
           {
-            path: 'crear-cliente',
+            path: 'repairs',
+            element: (
+              <WorkerLayout title="Reparaciones">
+                <WorkerPage />
+              </WorkerLayout>
+            ),
+          },
+          {
+            path: 'create-client',
             element: (
               <WorkerLayout title="Registrar Nuevo Cliente">
                 <CreateClientPage />
@@ -54,6 +64,14 @@ export const router = createBrowserRouter([
             element: (
               <WorkerLayout title="Crear Reparación">
                 <CreateRepairPage />
+              </WorkerLayout>
+            ),
+          },
+          {
+            path: 'create-vehicle',
+            element: (
+              <WorkerLayout title="Crear Vehiculo">
+                <CreateVehiclePage />
               </WorkerLayout>
             ),
           },

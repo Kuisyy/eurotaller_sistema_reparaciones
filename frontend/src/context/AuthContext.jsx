@@ -25,16 +25,18 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [authError, setAuthError] = useState(null); // Para errores de autenticación/registro
+  const [authSuccess, setAuthSuccess] = useState(null); // Para mensajes de éxito
 
   const checkAuth = async () => {
     setIsLoading(true);
-    
+
     // Primero intentamos obtener el token de las cookies
     const token = getTokenFromCookies();
-    
+
     // También verificamos si hay datos de usuario en localStorage
     const storedUser = getUserFromLocalStorage();
-    
+
     // Si no hay token ni datos de usuario almacenados, no estamos autenticados
     if (!token && !storedUser) {
       setIsAuthenticated(false);
@@ -42,7 +44,7 @@ export const AuthProvider = ({ children }) => {
       setIsLoading(false);
       return;
     }
-    
+
     // Si hay un token, verificamos con el servidor
     if (token) {
       try {
@@ -95,11 +97,10 @@ export const AuthProvider = ({ children }) => {
       }
     } else if (storedUser) {
       // Si no hay token pero hay datos en localStorage, restauramos la sesión
-      console.log("Restoring session from localStorage:", storedUser);
       setIsAuthenticated(true);
       setUser(storedUser);
     }
-    
+
     setIsLoading(false);
   };
 
@@ -109,6 +110,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     setIsLoading(true);
+    setAuthError(null); // Limpiar errores previos
     try {
       const response = await fetch(`${VITE_API_URL}auth/login`, {
         method: 'POST',
@@ -126,7 +128,7 @@ export const AuthProvider = ({ children }) => {
           name: data.user.name,
           email: data.user.email,
         };
-        
+
         setIsAuthenticated(true);
         setUser(userData);
 
@@ -135,10 +137,12 @@ export const AuthProvider = ({ children }) => {
 
         return { success: true, user: userData };
       } else {
+        setAuthError(data.message || 'Error de autenticación');
         return { success: false, message: data.message || 'Error de autenticación' };
       }
     } catch (error) {
       console.error("Login error:", error);
+      setAuthError(error.message || 'Error en el servidor');
       return { success: false, message: error.message || 'Error en el servidor' };
     } finally {
       setIsLoading(false);
@@ -155,13 +159,48 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const registerClient = async (registrationData) => {
+    setIsLoading(true);
+    setAuthError(null); 
+    setAuthSuccess(null); 
+    try {
+      const response = await fetch(`${VITE_API_URL}auth/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(registrationData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log('Registro exitoso:', data);
+        setAuthSuccess('Cliente registrado correctamente.');
+        return { success: true };
+      } else {
+        setAuthError(data.message || 'Error al registrar el cliente.');
+        return { success: false, message: data.message || 'Error al registrar el cliente.' };
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      setAuthError(error.message || 'Error de conexión con el servidor.');
+      return { success: false, message: error.message || 'Error de conexión con el servidor.' };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const value = {
     isAuthenticated,
     user,
     login,
     logout,
     isLoading,
-    checkAuth
+    checkAuth,
+    registerClient, // Añade la función registerClient al contexto
+    authError, // Exponemos el estado de error
+    authSuccess, // Exponemos el estado de éxito
   };
 
   return (

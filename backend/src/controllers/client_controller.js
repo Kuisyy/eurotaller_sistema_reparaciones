@@ -3,7 +3,7 @@ import clientModel from '../models/client_model.js';
 // Función para obtener todos los clientes
 const getAllClients = async (req, res) => {
     try {
-        const clients = await clientModel.getAll(); 
+        const clients = await clientModel.getAllClients(); 
         res.status(200).json(clients);
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener los clientes' });
@@ -15,6 +15,21 @@ const getClientMe = async (req, res) => {
     const  id  = req.user.userId;
     try {
         const client = await clientModel.getClientByUserId(id);
+        if (client) {
+            res.status(200).json(client);
+        } else {
+            res.status(404).json({ message: 'Cliente no encontrado' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener el cliente' });
+    }
+};
+
+// Función para obtener un cliente por ID
+const getClientById = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const client = await clientModel.getClientById(id);
         if (client) {
             res.status(200).json(client);
         } else {
@@ -83,6 +98,7 @@ const deleteClient = async (req, res) => {
 
 export default {
     getAllClients,
+    getClientById,
     getClientMe,
     createClient,
     updateClient,

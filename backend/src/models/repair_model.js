@@ -90,7 +90,7 @@ export default {
   getRepairById,
   createRepair,
   updateRepair,
-  delete: deleteRepair,
+  deleteRepair,
   getRepairsByClientId,
   getRepairsByVehicleId,
   getRepairsByWorkerId,

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import useClientData from '../hooks/useClientData';
@@ -9,10 +9,19 @@ const ClientPage = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const { repairs, loading, error, refreshData } = useClientData();
+  const [filterStatus, setFilterStatus] = useState('all');
+  
+  // Lista de estados posibles
+  const statusOptions = ['all', 'Pendiente', 'En curso', 'Finalizado'];
+
+  // Filtrar reparaciones según el estado seleccionado
+  const filteredRepairs = repairs.filter(repair => 
+    filterStatus === 'all' ? true : repair.status === filterStatus
+  );
 
   useEffect(() => {
     refreshData();
-  }, [user]); 
+  }, [user]);
 
   const handleLogout = () => {
     logout();
@@ -45,17 +54,6 @@ const ClientPage = () => {
 
         {/* User and logout section */}
         <div className="flex flex-row items-center gap-6">
-          <div className="flex items-center gap-3">
-            <div className="text-[#ffffff] text-left font-['Inter-Medium',_sans-serif] text-sm leading-[16.8px] font-medium">
-              {user?.name}
-            </div>
-            <div className="bg-[#0082c8] rounded-[18px] w-9 h-9 flex items-center justify-center">
-              <div className="text-[#ffffff] font-['Inter-SemiBold',_sans-serif] text-sm leading-[16.8px] font-semibold">
-                {user?.name?.split(' ').map(word => word[0]).join('')}
-              </div>
-            </div>
-          </div>
-          
           <button
             onClick={handleLogout}
             className="flex items-center gap-2 bg-[#0082c8] hover:bg-[#006da8] transition-colors duration-300 rounded-lg px-4 py-2 text-white text-sm font-['Inter-SemiBold',_sans-serif]"
@@ -81,8 +79,24 @@ const ClientPage = () => {
       {/* Content */}
       <div className="p-8 flex flex-col gap-6 items-start justify-start self-stretch flex-1 relative">
         <div className="flex flex-col gap-2 items-start justify-start self-stretch shrink-0 relative">
-          <div className="text-[#2c2c2c] text-left font-['Inter-Bold',_sans-serif] text-2xl leading-[28.8px] font-bold relative self-stretch">
-            Mis Vehículos
+          <div className="flex justify-between items-center w-full">
+            <div className="text-[#2c2c2c] text-left font-['Inter-Bold',_sans-serif] text-2xl leading-[28.8px] font-bold">
+              Mis Reparaciones
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-[#6e6e6e] text-sm">Filtrar por estado:</span>
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="border border-[#e0e0e0] rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:border-[#005bac]"
+              >
+                {statusOptions.map((status) => (
+                  <option key={status} value={status}> 
+                    {status === 'all' ? 'Todos' : status}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
           <div className="text-[#6e6e6e] text-left font-['Inter-Regular',_sans-serif] text-base leading-[19.2px] font-normal relative self-stretch">
             Consulta el estado de tus vehículos y reparaciones
@@ -97,12 +111,12 @@ const ClientPage = () => {
             </div>
           )}
 
-          {repairs.length === 0 ? (
-            <div className="text-gray-500 text-center w-full p-4">
-              No hay reparaciones registradas
+          {filteredRepairs.length === 0 ? (
+            <div className="text-gray-500 text-center w-full p-4 bg-white rounded-lg">
+              No hay reparaciones {filterStatus !== 'all' ? `en estado ${filterStatus}` : 'registradas'}
             </div>
           ) : (
-            repairs.map((repair) => (
+            filteredRepairs.map((repair) => (
               <RepairClientCard key={repair.repair_id} repair={repair} />
             ))
           )}

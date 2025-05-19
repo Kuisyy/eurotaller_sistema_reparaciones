@@ -23,7 +23,7 @@ const getWorkerById = async (req, res) => {
     res.status(500).json({ error: 'Error al obtener el trabajador' });
   }
 };
-
+ 
 const createWorker = async (req, res) => {
   try {
     const userData = {  

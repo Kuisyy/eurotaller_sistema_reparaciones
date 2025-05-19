@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.use(authMiddleware);
 
-router.get('/', repairController.getAllRepairs);
+router.get('/all', repairController.getAllRepairs);
 router.get('/:id', repairController.getRepairById);
 router.get('/client/:client_id', repairController.getRepairsByClientId);
 router.get('/vehicle/:vehicle_id', repairController.getRepairsByVehicleId);
