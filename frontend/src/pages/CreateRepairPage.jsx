@@ -16,7 +16,6 @@ const CreateRepairPage = () => {
 
   // Para depuración - verificar que workers está cargando correctamente
   useEffect(() => {
-    console.log("Workers cargados:", workers);
   }, [workers]);
 
   // Resetear el mensaje de éxito después de 3 segundos
@@ -136,7 +135,7 @@ const CreateRepairPage = () => {
               <option value="">Seleccionar cliente</option>
               {clients.map((client) => (
                 <option key={client.client_id} value={client.client_id}>
-                  ID: {client.client_id} - NIF: {client.nif} - Tel: {client.phone}
+                  {client.name} - NIF: {client.nif} - Tel: {client.phone}
                 </option>
               ))}
             </select>

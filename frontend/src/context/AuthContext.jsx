@@ -58,7 +58,6 @@ export const AuthProvider = ({ children }) => {
 
         if (response.ok) {
           const data = await response.json();
-          console.log("Response from /check-auth:", data);
           setIsAuthenticated(true);
           setUser({
             userId: data.userId,
@@ -72,7 +71,6 @@ export const AuthProvider = ({ children }) => {
           // Si la verificación falla, pero tenemos datos en localStorage,
           // podemos usar esos datos para mantener la sesión
           if (storedUser) {
-            console.log("Using stored user data:", storedUser);
             setIsAuthenticated(true);
             setUser(storedUser);
           } else {
@@ -86,7 +84,6 @@ export const AuthProvider = ({ children }) => {
         // Si hay un error en la verificación pero tenemos datos almacenados,
         // usamos esos datos para mantener la sesión (modo offline)
         if (storedUser) {
-          console.log("Using stored user data due to error:", storedUser);
           setIsAuthenticated(true);
           setUser(storedUser);
         } else {

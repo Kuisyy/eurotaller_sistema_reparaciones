@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.use(authMiddleware);
 
-router.get('/', vehicleController.getAllVehicles);
+router.get('/all', vehicleController.getAllVehicles);
 router.get('/:id', vehicleController.getVehicleById);
 router.get('/client/:id', vehicleController.getVehicleByClientId);
 router.post('/create', vehicleController.createVehicle);

@@ -14,6 +14,7 @@ import clientRoutes from './src/routes/client_routes.js';
 import vehicleRoutes from './src/routes/vehicle_routes.js';
 import repairRoutes from './src/routes/repair_routes.js';
 import authRoutes from './src/routes/auth_routes.js';
+import userRoutes from './src/routes/user_routes.js';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -45,6 +46,7 @@ async function createTables() {
 createTables()
   .then(() => {
     // Usa las rutas
+    app.use('/user', userRoutes);
     app.use('/auth', authRoutes);
     app.use('/client', clientRoutes);
     app.use('/vehicle', vehicleRoutes);

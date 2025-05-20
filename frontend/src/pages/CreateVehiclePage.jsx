@@ -120,6 +120,13 @@ const CreateVehiclePage = () => {
         </p>
       </div>
 
+      {/* Mostrar error de carga de clientes */}
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6">
+          Error al cargar los clientes: {error}
+        </div>
+      )}
+
       {submitSuccess && (
         <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6">
           Vehículo creado con éxito ✅

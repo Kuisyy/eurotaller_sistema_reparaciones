@@ -7,8 +7,14 @@ import ProtectedRoute from "../components/ProtectedRoute.jsx";
 import CreateRepairPage from "../pages/CreateRepairPage.jsx";
 import WorkerLayout from "../layout/WorkerLayout.jsx";
 import CreateClientPage from "../pages/CreateClientPage.jsx";
-import WorkerPage from "../pages/WorkerPage.jsx"; // Añadir esta importación
+import WorkerPage from "../pages/WorkerPage.jsx"; 
 import CreateVehiclePage from "../pages/CreateVehiclePage.jsx";
+import EditRepairPage from '../pages/EditRepairPage.jsx';
+import AdminLayout from '../layout/AdminLayout';
+import UsersPage from '../pages/UsersPage.jsx';
+import ConditionalLayout from '../components/ConditionalLayout';
+import VehiclesPage from '../pages/VehiclesPage.jsx';
+import CreateUserPage from '../pages/CreateUserPage.jsx';
 
 export const router = createBrowserRouter([
   {
@@ -34,7 +40,7 @@ export const router = createBrowserRouter([
       {
         path: 'worker',
         element: (
-          <ProtectedRoute allowedRoles={['worker']}>
+          <ProtectedRoute allowedRoles={['worker', 'admin']}>
             <Outlet />
           </ProtectedRoute>
         ),
@@ -46,33 +52,41 @@ export const router = createBrowserRouter([
           {
             path: 'repairs',
             element: (
-              <WorkerLayout title="Reparaciones">
+              <ConditionalLayout title="Reparaciones">
                 <WorkerPage />
-              </WorkerLayout>
+              </ConditionalLayout>
             ),
           },
           {
             path: 'create-client',
             element: (
-              <WorkerLayout title="Registrar Nuevo Cliente">
+              <ConditionalLayout title="Registrar Nuevo Cliente">
                 <CreateClientPage />
-              </WorkerLayout>
+              </ConditionalLayout>
             ),
           },
           {
             path: 'create-repair',
             element: (
-              <WorkerLayout title="Crear Reparación">
+              <ConditionalLayout title="Crear Reparación">
                 <CreateRepairPage />
-              </WorkerLayout>
+              </ConditionalLayout>
             ),
           },
           {
             path: 'create-vehicle',
             element: (
-              <WorkerLayout title="Crear Vehiculo">
+              <ConditionalLayout title="Crear Vehículo">
                 <CreateVehiclePage />
-              </WorkerLayout>
+              </ConditionalLayout>
+            ),
+          },
+          {
+            path: 'repair/:repairId/edit',
+            element: (
+              <ConditionalLayout title="Editar Reparación">
+                <EditRepairPage />
+              </ConditionalLayout>
             ),
           },
         ],
@@ -87,8 +101,56 @@ export const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <AdminPage />,
+            element: <Navigate to="users" replace />,
           },
+          {
+            path: 'users',
+            element: (
+              <AdminLayout title="Usuarios">
+                <UsersPage />
+              </AdminLayout>
+            ),
+          },
+          {
+            path: 'create-user',
+            element: (
+              <AdminLayout title="Crear Usuario">
+                <CreateUserPage />
+              </AdminLayout>
+            ),
+          },
+          {
+            path: 'repairs',
+            element: (
+              <AdminLayout title="Reparaciones">
+                <WorkerPage />
+              </AdminLayout>
+            ),
+          },
+          {
+            path: 'vehicles',
+            element: (
+              <AdminLayout title="Vehículos">
+                <VehiclesPage />
+              </AdminLayout>
+            ),
+          },
+          {
+            path: 'create-vehicle',
+            element: (
+              <AdminLayout title="Crear Vehículo">
+                <CreateVehiclePage />
+              </AdminLayout>
+            ),
+          },
+          // {
+          //   path: 'vehicle/:vehicleId/edit',
+          //   element: (
+          //     <AdminLayout title="Editar Vehículo">
+          //       <EditVehiclePage />
+          //     </AdminLayout>
+          //   ),
+          // }
         ],
       },
       {

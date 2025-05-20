@@ -3,7 +3,7 @@ import db from '../config/db_config.js';
 const getAllClients = async () => {
   try {
     const clients = await db.any(
-      `SELECT c.*, u.role AS user_role
+      `SELECT c.*, u.name, u.role AS user_role
        FROM clients c
        JOIN users u ON c.user_id = u.user_id`
     );
@@ -16,10 +16,10 @@ const getAllClients = async () => {
 const getClientById = async (id) => {
   try {
     const client = await db.oneOrNone(
-      `SELECT c.*, u.role AS user_role
+      `SELECT c.*, u.name, u.role AS user_role
        FROM clients c
        JOIN users u ON c.user_id = u.user_id
-       WHERE c.user_id = $1`,
+       WHERE c.client_id = $1`,
       [id]
     );
     return client;
@@ -28,7 +28,7 @@ const getClientById = async (id) => {
   }
 };
 
-const getClientByUserId = async (userId) => { // Cambiamos el nombre de la función
+const getClientByUserId = async (userId) => { 
   try {
     const client = await db.oneOrNone(
       `SELECT c.*, u.role AS user_role

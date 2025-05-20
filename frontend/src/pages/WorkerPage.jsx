@@ -99,7 +99,7 @@ const WorkerPage = ({ className }) => {
                 <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Vehículo</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Cliente</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Descripción</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Fecha</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Fecha de Entrada</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Estado</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Acciones</th>
               </tr>
@@ -121,16 +121,16 @@ const WorkerPage = ({ className }) => {
                   <td className="px-6 py-4">
                     <div>
                       <div className="text-sm font-medium">
-                        {repair.client?.nif || 'N/A'}
+                        {repair.client?.name || 'N/A'}
                       </div>
                       <div className="text-xs text-[#6e6e6e]">
-                        {repair.client?.phone || 'Sin teléfono'}
+                        {repair.client?.nif || 'NIF no disponible'}
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 text-sm">{repair.description}</td>
                   <td className="px-6 py-4 text-sm">
-                    {new Date(repair.date).toLocaleDateString()}
+                    {new Date(repair.created_at).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4">
                     <StatusBadge status={repair.status} />

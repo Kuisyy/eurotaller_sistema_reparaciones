@@ -21,7 +21,6 @@ const LoginPage = () => {
 
   // Función para manejar la redirección basada en el rol
   const redirectBasedOnRole = (role) => {
-    console.log("Redirecting based on role:", role);
     switch (role) {
       case 'client':
         navigate('/client', { replace: true });
