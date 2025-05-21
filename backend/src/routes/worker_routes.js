@@ -10,6 +10,6 @@ router.use(authMiddleware);
 
 router.get('/me', workerController.getWorkerById);
 router.get('/all', workerController.getAllWorkers);
-router.get('/repairs', repairController.getRepairsByWorkerId);
+router.get('/:id', workerController.getWorkerById);
 
 export default router;

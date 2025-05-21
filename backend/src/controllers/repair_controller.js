@@ -104,16 +104,17 @@ const getRepairsByVehicleId = async (req, res) => {
   }
 };
 
-const getRepairsByWorkerId = async (req, res) => {
-  const { worker_id } = req.user.roleId;
+const getRepairsByUserId = async (req, res) => {
+  const { user_id } = req.params; // Cambiado de worker_id a user_id para consistencia
   try {
-    const repairs = await repairModel.getRepairsByWorkerId(worker_id);
-    res.status(200).json(repairs);
+    const repairs = await repairModel.getRepairsByUserId(user_id);
+    const responseArray = Array.isArray(repairs) ? repairs : repairs ? [repairs] : [];
+    res.status(200).json(responseArray);
   } catch (error) {
+    console.error('Error al obtener reparaciones:', error);
     res.status(500).json({ error: 'Error al obtener las reparaciones del trabajador' });
   }
 };
-
 
 export default {
   getAllRepairs,
@@ -123,5 +124,5 @@ export default {
   deleteRepair,
   getRepairsByClientId,
   getRepairsByVehicleId,
-  getRepairsByWorkerId,
+  getRepairsByUserId  
 };

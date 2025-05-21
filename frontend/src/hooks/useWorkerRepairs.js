@@ -39,17 +39,25 @@ const useWorkerRepairs = () => {
             });
             const clientData = await clientResponse.json();
 
+            // Añadir: Obtener detalles del trabajador
+            const workerResponse = await fetch(`${API_URL}worker/${repair.worker_id}`, {
+              credentials: 'include'
+            });
+            const workerData = await workerResponse.json();
+
             return {
               ...repair,
               vehicle: vehicleData,
-              client: clientData
+              client: clientData,
+              worker: workerData
             };
           } catch (error) {
             console.error(`Error fetching details for repair ${repair.repair_id}:`, error);
             return {
               ...repair,
               vehicle: null,
-              client: null
+              client: null,
+              worker: null
             };
           }
         })

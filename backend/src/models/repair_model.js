@@ -75,9 +75,18 @@ const getRepairsByVehicleId = async (vehicle_id) => {
   }
 };
 
-const getRepairsByWorkerId = async (worker_id) => {
+const getRepairsByUserId = async (user_id) => {
   try {
-    const repairs = await db.any('SELECT * FROM repairs WHERE worker_id = $1', [worker_id]);
+    const repairs = await db.any(`
+      SELECT 
+        r.*,
+        u.name as worker_name
+      FROM repairs r
+      INNER JOIN workers w ON r.worker_id = w.worker_id
+      INNER JOIN users u ON w.user_id = u.user_id
+      WHERE w.user_id = $1
+      ORDER BY r.created_at DESC
+    `, [user_id]);
     return repairs;
   } catch (error) {
     throw error;
@@ -93,5 +102,5 @@ export default {
   deleteRepair,
   getRepairsByClientId,
   getRepairsByVehicleId,
-  getRepairsByWorkerId,
+  getRepairsByUserId,
 };

@@ -10,6 +10,7 @@ router.get('/all', repairController.getAllRepairs);
 router.get('/:id', repairController.getRepairById);
 router.get('/client/:client_id', repairController.getRepairsByClientId);
 router.get('/vehicle/:vehicle_id', repairController.getRepairsByVehicleId);
+router.get('/user/:user_id', repairController.getRepairsByUserId);
 router.post('/create', repairController.createRepair);
 router.put('/update/:id', repairController.updateRepair);
 router.delete('/:id', repairController.deleteRepair);

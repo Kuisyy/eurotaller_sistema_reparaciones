@@ -194,7 +194,7 @@ const CreateRepairPage = () => {
               className="w-full border border-[#e0e0e0] rounded-lg px-4 py-3 bg-white"
             >
               <option value="Pendiente">Pendiente</option>
-              <option value="En progreso">En progreso</option>
+              <option value="En curso">En curso</option>
               <option value="Finalizado">Finalizado</option>
               <option value="Cancelada">Cancelada</option>
             </select>

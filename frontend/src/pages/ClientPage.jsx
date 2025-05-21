@@ -1,27 +1,24 @@
-import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import useClientData from '../hooks/useClientData';
-import RepairClientCard from '../components/RepairClientCard.jsx';
 import tallerLogo from '../imgs/mechanic.png';
 
 const ClientPage = () => {
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
   const navigate = useNavigate();
-  const { repairs, loading, error, refreshData } = useClientData();
-  const [filterStatus, setFilterStatus] = useState('all');
-  
+  const { 
+    repairs, 
+    loading, 
+    error, 
+    filterStatus, 
+    setFilterStatus 
+  } = useClientData();
+
   // Lista de estados posibles
   const statusOptions = ['all', 'Pendiente', 'En curso', 'Finalizado'];
 
-  // Filtrar reparaciones según el estado seleccionado
-  const filteredRepairs = repairs.filter(repair => 
-    filterStatus === 'all' ? true : repair.status === filterStatus
-  );
-
-  useEffect(() => {
-    refreshData();
-  }, [user]);
+  // Ya no necesitamos filtrar por cliente_id aquí
+  const filteredRepairs = repairs;
 
   const handleLogout = () => {
     logout();
@@ -77,12 +74,12 @@ const ClientPage = () => {
       </div>
 
       {/* Content */}
-      <div className="p-8 flex flex-col gap-6 items-start justify-start self-stretch flex-1 relative">
-        <div className="flex flex-col gap-2 items-start justify-start self-stretch shrink-0 relative">
-          <div className="flex justify-between items-center w-full">
-            <div className="text-[#2c2c2c] text-left font-['Inter-Bold',_sans-serif] text-2xl leading-[28.8px] font-bold">
+      <div className="p-8 flex flex-col gap-6 w-full">
+        <div className="flex flex-col gap-2 mb-6">
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-bold text-[#2c2c2c]">
               Mis Reparaciones
-            </div>
+            </h2>
             <div className="flex items-center gap-3">
               <span className="text-[#6e6e6e] text-sm">Filtrar por estado:</span>
               <select
@@ -98,28 +95,64 @@ const ClientPage = () => {
               </select>
             </div>
           </div>
-          <div className="text-[#6e6e6e] text-left font-['Inter-Regular',_sans-serif] text-base leading-[19.2px] font-normal relative self-stretch">
-            Consulta el estado de tus vehículos y reparaciones
-          </div>
+          <p className="text-[#6e6e6e]">Consulta el estado de tus vehículos y reparaciones</p>
         </div>
 
-        {/* Repairs List */}
-        <div className="flex flex-col gap-4 items-start justify-start self-stretch shrink-0 relative">
-          {error && (
-            <div className="text-red-500 p-4 rounded-lg bg-red-50 w-full">
-              {error}
-            </div>
-          )}
+        {error && (
+          <div className="bg-red-50 text-red-500 p-4 rounded-lg">
+            {error}
+          </div>
+        )}
 
-          {filteredRepairs.length === 0 ? (
-            <div className="text-gray-500 text-center w-full p-4 bg-white rounded-lg">
-              No hay reparaciones {filterStatus !== 'all' ? `en estado ${filterStatus}` : 'registradas'}
-            </div>
-          ) : (
-            filteredRepairs.map((repair) => (
-              <RepairClientCard key={repair.repair_id} repair={repair} />
-            ))
-          )}
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+          <table className="w-full">
+            <thead className="bg-[#f7f9fb] border-b border-[#e0e0e0]">
+              <tr>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">ID</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Vehículo</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Descripción</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Técnico</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Fecha</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Estado</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#e0e0e0]">
+              {filteredRepairs.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="px-6 py-4 text-center text-[#6e6e6e]">
+                    No hay reparaciones {filterStatus !== 'all' ? `en estado ${filterStatus}` : 'registradas'}
+                  </td>
+                </tr>
+              ) : (
+                filteredRepairs.map((repair) => (
+                  <tr key={repair.repair_id} className="hover:bg-[#f7f9fb] transition-colors">
+                    <td className="px-6 py-4 text-sm">R-{String(repair.repair_id).padStart(3, '0')}</td>
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium">{repair.vehicle?.registration_number}</span>
+                        <span className="text-xs text-[#6e6e6e]">{repair.vehicle?.brand} {repair.vehicle?.model}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-sm">{repair.description}</td>
+                    <td className="px-6 py-4 text-sm">{repair.worker_name || 'N/A'}</td>
+                    <td className="px-6 py-4 text-sm">
+                      {new Date(repair.created_at).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`
+                        px-3 py-1.5 rounded-full text-xs font-medium
+                        ${repair.status === 'Pendiente' ? 'bg-[#f59e0b] text-white' : ''}
+                        ${repair.status === 'En curso' ? 'bg-[#005bac] text-white' : ''}
+                        ${repair.status === 'Finalizado' ? 'bg-[#84bd00] text-white' : ''}
+                      `}>
+                        {repair.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

@@ -24,7 +24,7 @@ const useClientData = () => {
       const clientData = await clientResponse.json();
       setClientId(clientData.client_id);
 
-      // Luego obtener todas las reparaciones del cliente usando la nueva ruta
+      // Obtener reparaciones del cliente
       const repairsResponse = await fetch(`${VITE_API_URL}repair/client/${clientData.client_id}`, {
         credentials: 'include'
       });
@@ -35,10 +35,11 @@ const useClientData = () => {
 
       const repairsData = await repairsResponse.json();
 
-      // Obtener información del vehículo para cada reparación
-      const repairsWithVehicleInfo = await Promise.all(
+      // Obtener información del vehículo y del técnico para cada reparación
+      const repairsWithDetails = await Promise.all(
         repairsData.map(async (repair) => {
           try {
+            // Obtener datos del vehículo
             const vehicleResponse = await fetch(`${VITE_API_URL}vehicle/${repair.vehicle_id}`, {
               credentials: 'include'
             });
@@ -46,17 +47,37 @@ const useClientData = () => {
             if (!vehicleResponse.ok) {
               throw new Error(`Error al obtener el vehículo ${repair.vehicle_id}`);
             }
-
             const vehicleData = await vehicleResponse.json();
-            return { ...repair, vehicle: vehicleData, client_id: clientData.client_id };
-          } catch (vehicleError) {
-            console.error(`Error fetching vehicle ${repair.vehicle_id}:`, vehicleError);
-            return { ...repair, vehicle: null, client_id: clientData.client_id };
+
+            // Obtener datos del técnico
+            const workerResponse = await fetch(`${VITE_API_URL}worker/${repair.worker_id}`, {
+              credentials: 'include'
+            });
+
+            if (!workerResponse.ok) {
+              throw new Error(`Error al obtener el técnico ${repair.worker_id}`);
+            }
+            const workerData = await workerResponse.json();
+
+            return { 
+              ...repair, 
+              vehicle: vehicleData, 
+              worker_name: workerData.name,
+              client_id: clientData.client_id 
+            };
+          } catch (error) {
+            console.error(`Error fetching details for repair ${repair.repair_id}:`, error);
+            return { 
+              ...repair, 
+              vehicle: null, 
+              worker_name: 'N/A',
+              client_id: clientData.client_id 
+            };
           }
         })
       );
 
-      setRepairs(repairsWithVehicleInfo);
+      setRepairs(repairsWithDetails);
       setError(null);
     } catch (err) {
       setError(err.message);

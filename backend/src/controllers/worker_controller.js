@@ -11,9 +11,9 @@ const getAllWorkers = async (req, res) => {
 
 const getWorkerById = async (req, res) => {
   try {
-    const workerId = req.user.userId; 
+    const { id } = req.params; 
 
-    const worker = await workerModel.getWorkerByUserId(workerId);
+    const worker = await workerModel.getWorkerById(id);
     if (worker) {
       res.status(200).json(worker);
     } else {

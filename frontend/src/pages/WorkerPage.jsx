@@ -115,6 +115,7 @@ const WorkerPage = ({ className }) => {
                 <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">ID</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Vehículo</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Cliente</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Técnico</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Descripción</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Fecha de Entrada</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Estado</th>
@@ -142,6 +143,13 @@ const WorkerPage = ({ className }) => {
                       </div>
                       <div className="text-xs text-[#6e6e6e]">
                         {repair.client?.nif || 'NIF no disponible'}
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div>
+                      <div className="text-sm font-medium">
+                        {repair.worker?.name || 'N/A'}
                       </div>
                     </div>
                   </td>
