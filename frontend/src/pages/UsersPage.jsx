@@ -1,7 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { FiEdit2, FiTrash2, FiSearch, FiBell, FiUser } from 'react-icons/fi';
+import { FiEdit2, FiTrash2, FiSearch } from 'react-icons/fi';
 import useUsers from '../hooks/useUsers';
+import ConfirmModal from '../components/ConfirmModal';
 
 const UsersPage = () => {
   const {
@@ -11,7 +12,11 @@ const UsersPage = () => {
     searchQuery,
     setSearchQuery,
     deleteUser,
-    successMessage
+    successMessage,
+    showDeleteModal,
+    setShowDeleteModal,
+    handleDeleteClick,
+    userToDelete
   } = useUsers();
 
   const [selectedFilter, setSelectedFilter] = useState('all');
@@ -160,7 +165,7 @@ const UsersPage = () => {
                     <FiEdit2 className="w-4 h-4 text-[#6e6e6e]" />
                   </Link>
                   <button
-                    onClick={() => deleteUser(user.user_id)}
+                    onClick={() => handleDeleteClick(user.user_id)}
                     className="w-9 h-9 rounded-full flex items-center justify-center bg-[#f7f9fb] hover:bg-[#ffe5e5] hover:text-[#e53935] transition-colors"
                   >
                     <FiTrash2 className="w-4 h-4 text-[#e53935]" />
@@ -177,6 +182,14 @@ const UsersPage = () => {
           </div>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={() => deleteUser(userToDelete)}
+        title="Eliminar usuario"
+        message="¿Estás seguro de que quieres eliminar este usuario? Esta acción no se puede deshacer."
+      />
     </div>
   );
 };

@@ -156,16 +156,18 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  const registerClient = async (registrationData) => {
+  const register = async (registrationData) => {
     setIsLoading(true);
-    setAuthError(null); 
-    setAuthSuccess(null); 
+    setAuthError(null);
+    setAuthSuccess(null);
+    
     try {
       const response = await fetch(`${VITE_API_URL}auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(registrationData),
       });
 
@@ -173,11 +175,11 @@ export const AuthProvider = ({ children }) => {
 
       if (response.ok) {
         console.log('Registro exitoso:', data);
-        setAuthSuccess('Cliente registrado correctamente.');
-        return { success: true };
+        setAuthSuccess(`${registrationData.role === 'admin' ? 'Administrador' : 'Trabajador'} registrado correctamente.`);
+        return { success: true, data };
       } else {
-        setAuthError(data.message || 'Error al registrar el cliente.');
-        return { success: false, message: data.message || 'Error al registrar el cliente.' };
+        setAuthError(data.message || 'Error en el registro.');
+        return { success: false, message: data.message || 'Error en el registro.' };
       }
     } catch (error) {
       console.error("Registration error:", error);
@@ -188,6 +190,18 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const registerClient = async (clientData) => {
+    return register({ ...clientData, role: 'client' });
+  };
+
+  const registerWorker = async (workerData) => {
+    return register({ ...workerData, role: 'worker' });
+  };
+
+  const registerAdmin = async (adminData) => {
+    return register({ ...adminData, role: 'admin' });
+  };
+
   const value = {
     isAuthenticated,
     user,
@@ -195,9 +209,12 @@ export const AuthProvider = ({ children }) => {
     logout,
     isLoading,
     checkAuth,
-    registerClient, // Añade la función registerClient al contexto
-    authError, // Exponemos el estado de error
-    authSuccess, // Exponemos el estado de éxito
+    register,        // Función general de registro
+    registerClient,  // Función específica para clientes
+    registerWorker,  // Función específica para trabajadores
+    registerAdmin,   // Función específica para administradores
+    authError,
+    authSuccess,
   };
 
   return (

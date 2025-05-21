@@ -195,7 +195,7 @@ const CreateRepairPage = () => {
             >
               <option value="Pendiente">Pendiente</option>
               <option value="En progreso">En progreso</option>
-              <option value="Completada">Completada</option>
+              <option value="Finalizado">Finalizado</option>
               <option value="Cancelada">Cancelada</option>
             </select>
           </div>

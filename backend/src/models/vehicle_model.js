@@ -75,6 +75,6 @@ export default {
   getVehicleById,
   createVehicle,
   updateVehicle,
-  delete: deleteVehicle,
+  deleteVehicle,
   getVehicleByClientId,
 };

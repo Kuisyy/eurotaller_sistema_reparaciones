@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FiEdit2, FiTrash2, FiSearch } from 'react-icons/fi';
 import useWorkerRepairs from '../hooks/useWorkerRepairs';
+import ConfirmModal from '../components/ConfirmModal';
 
 const statusColors = {
   'Pendiente': 'bg-[#e53935]',
@@ -16,6 +17,9 @@ const StatusBadge = ({ status }) => (
 );
 
 const WorkerPage = ({ className }) => {
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [repairToDelete, setRepairToDelete] = useState(null);
+  
   const {
     repairs,
     loading,
@@ -27,6 +31,19 @@ const WorkerPage = ({ className }) => {
     deleteRepair,
     successMessage
   } = useWorkerRepairs();
+
+  const handleDeleteClick = (repairId) => {
+    setRepairToDelete(repairId);
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (repairToDelete) {
+      deleteRepair(repairToDelete);
+      setShowDeleteModal(false);
+      setRepairToDelete(null);
+    }
+  };
 
   if (loading) {
     return (
@@ -144,7 +161,7 @@ const WorkerPage = ({ className }) => {
                         <FiEdit2 className="w-4 h-4 text-[#6e6e6e]" />
                       </Link>
                       <button
-                        onClick={() => deleteRepair(repair.repair_id)}
+                        onClick={() => handleDeleteClick(repair.repair_id)}
                         className="p-2 hover:bg-[#f7f9fb] rounded-full transition-colors"
                       >
                         <FiTrash2 className="w-4 h-4 text-[#e53935]" />
@@ -157,6 +174,15 @@ const WorkerPage = ({ className }) => {
           </table>
         </div>
       </div>
+
+      {/* Modal de confirmación para eliminar */}
+      <ConfirmModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleConfirmDelete}
+        title="Eliminar reparación"
+        message={`¿Estás seguro de que quieres eliminar esta reparación? Esta acción no se puede deshacer.`}
+      />
     </div>
   );
 };

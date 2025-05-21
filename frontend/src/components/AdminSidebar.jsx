@@ -1,6 +1,14 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import tallerLogo from '../imgs/mechanic.png';
+import { 
+  FiUsers, 
+  FiUserPlus, 
+  FiTool, 
+  FiPlusCircle, 
+  FiTruck,
+  FiLogOut 
+} from 'react-icons/fi';
 
 export const AdminSidebar = () => {
   const location = useLocation();
@@ -32,14 +40,16 @@ export const AdminSidebar = () => {
           </div>
           <Link
             to="/admin/users"
-            className={`rounded px-3 flex items-center h-10 ${isActive('/admin/users')}`}
+            className={`rounded px-3 flex items-center h-10 gap-3 ${isActive('/admin/users')}`}
           >
+            <FiUsers className="w-4 h-4" />
             <span className="text-sm">Gestionar Usuarios</span>
           </Link>
           <Link
             to="/admin/create-user"
-            className={`rounded px-3 flex items-center h-10 ${isActive('/admin/create-user')}`}
+            className={`rounded px-3 flex items-center h-10 gap-3 ${isActive('/admin/create-user')}`}
           >
+            <FiUserPlus className="w-4 h-4" />
             <span className="text-sm">Crear Usuario</span>
           </Link>
 
@@ -47,15 +57,17 @@ export const AdminSidebar = () => {
             REPARACIONES
           </div>
           <Link
-            to="/worker/repairs"
-            className={`rounded px-3 flex items-center h-10 ${isActive('/admin/repairs')}`}
+            to="/admin/repairs"
+            className={`rounded px-3 flex items-center h-10 gap-3 ${isActive('/admin/repairs')}`}
           >
+            <FiTool className="w-4 h-4" />
             <span className="text-sm">Ver Reparaciones</span>
           </Link>
           <Link
             to="/worker/create-repair"
-            className={`rounded px-3 flex items-center h-10 ${isActive('/admin/create-repair')}`}
+            className={`rounded px-3 flex items-center h-10 gap-3 ${isActive('/admin/create-repair')}`}
           >
+            <FiPlusCircle className="w-4 h-4" />
             <span className="text-sm">Crear Reparación</span>
           </Link>
 
@@ -64,38 +76,27 @@ export const AdminSidebar = () => {
           </div>
           <Link
             to="/admin/vehicles"
-            className={`rounded px-3 flex items-center h-10 ${isActive('/admin/vehicles')}`}
+            className={`rounded px-3 flex items-center h-10 gap-3 ${isActive('/admin/vehicles')}`}
           >
+            <FiTruck className="w-4 h-4" />
             <span className="text-sm">Ver Vehículos</span>
           </Link>
           <Link
             to="/worker/create-vehicle"
-            className={`rounded px-3 flex items-center h-10 ${isActive('/admin/create-vehicle')}`}
+            className={`rounded px-3 flex items-center h-10 gap-3 ${isActive('/admin/create-vehicle')}`}
           >
+            <FiPlusCircle className="w-4 h-4" />
             <span className="text-sm">Crear Vehículo</span>
           </Link>
-
         </div>
       </div>
 
       <div className="p-4 border-t border-[#e0e0e0] space-y-4">
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-2 text-[#6e6e6e] hover:text-[#005bac] transition-colors duration-300 px-3 py-2 rounded"
+          className="w-full flex items-center gap-3 text-[#6e6e6e] hover:text-[#005bac] transition-colors duration-300 px-3 py-2 rounded"
         >
-          <svg 
-            className="w-4 h-4" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2" 
-            strokeLinecap="round" 
-            strokeLinejoin="round"
-          >
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-            <polyline points="16 17 21 12 16 7" />
-            <line x1="21" y1="12" x2="9" y2="12" />
-          </svg>
+          <FiLogOut className="w-4 h-4" />
           <span className="text-sm">Cerrar sesión</span>
         </button>
       </div>

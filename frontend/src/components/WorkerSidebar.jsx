@@ -1,6 +1,13 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import tallerLogo from '../imgs/mechanic.png';
+import { 
+  FiTool, 
+  FiPlusCircle, 
+  FiUserPlus, 
+  FiTruck,
+  FiLogOut 
+} from 'react-icons/fi';
 
 export const WorkerSidebar = () => {
   const location = useLocation();
@@ -27,36 +34,40 @@ export const WorkerSidebar = () => {
         </div>
 
         <div className="p-4 flex flex-col gap-1">
-          <div className="text-[#6e6e6e]  text-xs font-semibold">
+          <div className="text-[#6e6e6e] text-xs font-semibold">
             GESTIÓN
           </div>
 
           <Link
             to="/worker/repairs"
-            className={`rounded px-3 flex items-center h-10 ${isActive('/worker/repair')}`}
+            className={`rounded px-3 flex items-center h-10 gap-3 ${isActive('/worker/repair')}`}
           >
+            <FiTool className="w-4 h-4" />
             <span className="text-sm">Ver Reparaciones</span>
           </Link>
 
           <Link
             to="/worker/create-repair"
-            className={`rounded px-3 flex items-center h-10 ${isActive('/worker/create-repair')}`}
+            className={`rounded px-3 flex items-center h-10 gap-3 ${isActive('/worker/create-repair')}`}
           >
-            <span className=" text-sm">Crear reparacion</span>
+            <FiPlusCircle className="w-4 h-4" />
+            <span className="text-sm">Crear Reparación</span>
           </Link>
 
           <Link
             to="/worker/create-client"
-            className={`rounded px-3 flex items-center h-10 ${isActive('/worker/create-client')}`}
+            className={`rounded px-3 flex items-center h-10 gap-3 ${isActive('/worker/create-client')}`}
           >
-            <span className=" text-sm">Crear cliente</span>
+            <FiUserPlus className="w-4 h-4" />
+            <span className="text-sm">Crear Cliente</span>
           </Link>
 
           <Link
             to="/worker/create-vehicle"
-            className={`rounded px-3 flex items-center h-10 ${isActive('/worker/crear-vehiculo')}`}
+            className={`rounded px-3 flex items-center h-10 gap-3 ${isActive('/worker/crear-vehiculo')}`}
           >
-            <span className=" text-sm">Crear Vehiculo</span>
+            <FiTruck className="w-4 h-4" />
+            <span className="text-sm">Crear Vehículo</span>
           </Link>
         </div>
       </div>
@@ -64,22 +75,10 @@ export const WorkerSidebar = () => {
       <div className="p-4 border-t border-[#e0e0e0] space-y-4">
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-2 text-[#6e6e6e] hover:text-[#005bac] transition-colors duration-300 px-3 py-2 rounded"
+          className="w-full flex items-center gap-3 text-[#6e6e6e] hover:text-[#005bac] transition-colors duration-300 px-3 py-2 rounded"
         >
-          <svg 
-            className="w-4 h-4" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2" 
-            strokeLinecap="round" 
-            strokeLinejoin="round"
-          >
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-            <polyline points="16 17 21 12 16 7" />
-            <line x1="21" y1="12" x2="9" y2="12" />
-          </svg>
-          <span className=" text-sm">Cerrar sesión</span>
+          <FiLogOut className="w-4 h-4" />
+          <span className="text-sm">Cerrar sesión</span>
         </button>
       </div>
     </div>

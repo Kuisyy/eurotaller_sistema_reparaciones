@@ -7,6 +7,8 @@ const useWorkerRepairs = () => {
   const [filterStatus, setFilterStatus] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [successMessage, setSuccessMessage] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [repairToDelete, setRepairToDelete] = useState(null);
 
   const API_URL = import.meta.env.VITE_API_URL;
   
@@ -63,11 +65,12 @@ const useWorkerRepairs = () => {
     }
   };
 
-  const deleteRepair = async (repairId) => {
-    if (!window.confirm('¿Estás seguro de que quieres eliminar esta reparación?')) {
-      return;
-    }
+  const handleDeleteClick = (repairId) => {
+    setRepairToDelete(repairId);
+    setShowDeleteModal(true);
+  };
 
+  const deleteRepair = async (repairId) => {
     try {
       const response = await fetch(`${API_URL}repair/${repairId}`, {
         method: 'DELETE',
@@ -79,12 +82,14 @@ const useWorkerRepairs = () => {
       await fetchRepairDetails();
       setSuccessMessage('Reparación eliminada correctamente');
       
-      // Limpiar el mensaje después de 3 segundos
       setTimeout(() => {
         setSuccessMessage(null);
       }, 3000);
     } catch (err) {
       setError(err.message);
+    } finally {
+      setShowDeleteModal(false);
+      setRepairToDelete(null);
     }
   };
 
@@ -111,6 +116,10 @@ const useWorkerRepairs = () => {
     searchQuery,
     setSearchQuery,
     successMessage,
+    showDeleteModal,
+    setShowDeleteModal,
+    handleDeleteClick,
+    repairToDelete,
     deleteRepair,
     refreshRepairs: fetchRepairDetails
   };

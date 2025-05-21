@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/AuthContext.jsx";
 import { FiEye, FiEyeOff } from "react-icons/fi";
+// Importamos los iconos que necesitamos
+import { FiUsers, FiTool, FiUser } from "react-icons/fi";
 
 const CreateUserPage = () => {
   const navigate = useNavigate();
-  const { register } = useAuth();
+  const { register, authError } = useAuth();
   const [selectedRole, setSelectedRole] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
@@ -48,16 +50,44 @@ const CreateUserPage = () => {
     e.preventDefault();
     setError(null);
 
-    if (formData.password !== formData.confirmPassword) {
-      setError("Las contraseñas no coinciden");
-      return;
-    }
-
     try {
-      await register(formData);
+      if (formData.password !== formData.confirmPassword) {
+        setError("Las contraseñas no coinciden");
+        return;
+      }
+
+      // Preparar los datos según el rol seleccionado
+      let dataToSend = {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role,
+        isActive: formData.isActive
+      };
+
+      // Añadir campos específicos según el rol
+      if (selectedRole === 'client') {
+        dataToSend = {
+          ...dataToSend,
+          phone: formData.phone,
+          nif: formData.nif,
+          address: formData.address,
+          postal_code: formData.postal_code,
+          city: formData.city,
+          province: formData.province,
+          country: formData.country
+        };
+      } else if (selectedRole === 'worker') {
+        dataToSend = {
+          ...dataToSend,
+          worker_role: formData.worker_role
+        };
+      }
+
+      await register(dataToSend);
       navigate('/admin/users');
     } catch (err) {
-      setError(err.message);
+      setError(err.message || authError);
     }
   };
 
@@ -204,9 +234,24 @@ const CreateUserPage = () => {
         </h2>
         <div className="grid grid-cols-3 gap-4">
           {[
-            { id: 'admin', label: 'Administrador', color: 'bg-[#005bac]', icon: 'admin-icon0.svg' },
-            { id: 'worker', label: 'Trabajador', color: 'bg-[#0082c8]', icon: 'worker-icon0.svg' },
-            { id: 'client', label: 'Cliente', color: 'bg-[#6e6e6e]', icon: 'client-icon0.svg' }
+            { 
+              id: 'admin', 
+              label: 'Administrador', 
+              color: 'bg-[#005bac]', 
+              icon: FiUsers 
+            },
+            { 
+              id: 'worker', 
+              label: 'Trabajador', 
+              color: 'bg-[#0082c8]', 
+              icon: FiTool 
+            },
+            { 
+              id: 'client', 
+              label: 'Cliente', 
+              color: 'bg-[#6e6e6e]', 
+              icon: FiUser 
+            }
           ].map(role => (
             <button
               key={role.id}
@@ -218,7 +263,7 @@ const CreateUserPage = () => {
                 }`}
             >
               <div className={`${role.color} rounded-xl w-8 h-8 flex items-center justify-center`}>
-                <img className="w-4 h-4" src={role.icon} alt={role.label} />
+                <role.icon className="w-4 h-4 text-white" />
               </div>
               <span className="font-medium">{role.label}</span>
             </button>

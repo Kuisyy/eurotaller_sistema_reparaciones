@@ -2,7 +2,6 @@ import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 import LoginPage from "../pages/LoginPage.jsx";
 import Layout from "../layout/Layout.jsx";
 import ClientPage from "../pages/ClientPage.jsx";
-import AdminPage from "../pages/AdminPage.jsx";
 import ProtectedRoute from "../components/ProtectedRoute.jsx";
 import CreateRepairPage from "../pages/CreateRepairPage.jsx";
 import WorkerLayout from "../layout/WorkerLayout.jsx";

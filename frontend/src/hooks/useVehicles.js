@@ -6,6 +6,8 @@ const useVehicles = () => {
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [successMessage, setSuccessMessage] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [vehicleToDelete, setVehicleToDelete] = useState(null);
 
   const API_URL = import.meta.env.VITE_API_URL;
 
@@ -64,19 +66,24 @@ const useVehicles = () => {
     }
   };
 
-  const deleteVehicle = async (vehicleId) => {
-    if (!window.confirm('¿Estás seguro de que quieres eliminar este vehículo?')) {
-      return;
-    }
+  const handleDeleteClick = (vehicleId) => {
+    setVehicleToDelete(vehicleId);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!vehicleToDelete) return;
 
     try {
-      const response = await fetch(`${API_URL}vehicle/${vehicleId}`, {
+      const response = await fetch(`${API_URL}vehicle/${vehicleToDelete}`, {
         method: 'DELETE',
         credentials: 'include'
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('Error al eliminar el vehículo');
+        throw new Error(data.message || 'Error al eliminar el vehículo');
       }
 
       await fetchVehicles();
@@ -87,6 +94,9 @@ const useVehicles = () => {
       }, 3000);
     } catch (err) {
       setError(err.message);
+    } finally {
+      setShowDeleteModal(false);
+      setVehicleToDelete(null);
     }
   };
 
@@ -136,10 +146,15 @@ const useVehicles = () => {
     error,
     searchQuery,
     setSearchQuery,
-    deleteVehicle,
+    // Eliminamos la duplicidad de deleteVehicle
+    handleDeleteClick,
     updateVehicle,
     successMessage,
-    refreshVehicles: fetchVehicles
+    refreshVehicles: fetchVehicles,
+    showDeleteModal,
+    setShowDeleteModal,
+    confirmDelete,
+    vehicleToDelete
   };
 };
 

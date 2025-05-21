@@ -6,6 +6,8 @@ const useUsers = () => {
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [successMessage, setSuccessMessage] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
 
   const API_URL = import.meta.env.VITE_API_URL;
 
@@ -31,32 +33,31 @@ const useUsers = () => {
     }
   };
 
-  const deleteUser = async (userId) => {
-    if (!window.confirm('¿Estás seguro de que quieres eliminar este usuario?')) {
-      return;
-    }
+  const handleDeleteClick = (userId) => {
+    setUserToDelete(userId);
+    setShowDeleteModal(true);
+  };
 
+  const deleteUser = async (userId) => {
     try {
       const response = await fetch(`${API_URL}user/${userId}`, {
         method: 'DELETE',
         credentials: 'include'
       });
 
-      if (!response.ok) {
-        throw new Error('Error al eliminar el usuario');
-      }
-
-      // Update users list and show success message
+      if (!response.ok) throw new Error('Error al eliminar el usuario');
+      
       await fetchUsers();
       setSuccessMessage('Usuario eliminado correctamente');
       
-      // Clear success message after 3 seconds
       setTimeout(() => {
         setSuccessMessage(null);
       }, 3000);
     } catch (err) {
       setError(err.message);
-      console.error('Error:', err);
+    } finally {
+      setShowDeleteModal(false);
+      setUserToDelete(null);
     }
   };
 
@@ -81,6 +82,10 @@ const useUsers = () => {
     error,
     searchQuery,
     setSearchQuery,
+    showDeleteModal,
+    setShowDeleteModal,
+    handleDeleteClick,
+    userToDelete,
     deleteUser,
     successMessage,
     refreshUsers: fetchUsers
