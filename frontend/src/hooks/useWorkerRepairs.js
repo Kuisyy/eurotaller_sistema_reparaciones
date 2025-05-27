@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 
 const useWorkerRepairs = () => {
   const [repairs, setRepairs] = useState([]);
@@ -88,13 +89,13 @@ const useWorkerRepairs = () => {
       if (!response.ok) throw new Error('Error al eliminar la reparación');
       
       await fetchRepairDetails();
-      setSuccessMessage('Reparación eliminada correctamente');
+      toast.success('Reparación eliminada correctamente');
       
       setTimeout(() => {
         setSuccessMessage(null);
       }, 3000);
     } catch (err) {
-      setError(err.message);
+      toast.error('Error al eliminar la reparación: ' + err.message);
     } finally {
       setShowDeleteModal(false);
       setRepairToDelete(null);
@@ -115,6 +116,17 @@ const useWorkerRepairs = () => {
     fetchRepairDetails();
   }, []);
 
+  // Ejemplo para cualquier formulario de creación/edición
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // ... submit logic ...
+      toast.success('Operación realizada con éxito');
+    } catch (err) {
+      toast.error('Error: ' + err.message);
+    }
+  };
+
   return {
     repairs: filteredRepairs,
     loading,
@@ -129,7 +141,8 @@ const useWorkerRepairs = () => {
     handleDeleteClick,
     repairToDelete,
     deleteRepair,
-    refreshRepairs: fetchRepairDetails
+    refreshRepairs: fetchRepairDetails,
+    handleSubmit
   };
 };
 

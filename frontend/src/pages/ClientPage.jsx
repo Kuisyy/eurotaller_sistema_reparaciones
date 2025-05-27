@@ -2,6 +2,9 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import useClientData from '../hooks/useClientData';
 import tallerLogo from '../imgs/mechanic.png';
+import RepairCard from '../components/RepairCard';
+import { toast } from 'sonner';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const ClientPage = () => {
   const { logout } = useAuth();
@@ -17,24 +20,24 @@ const ClientPage = () => {
   // Lista de estados posibles
   const statusOptions = ['all', 'Pendiente', 'En curso', 'Finalizado'];
 
-  // Ya no necesitamos filtrar por cliente_id aquí
-  const filteredRepairs = repairs;
+  // Filtrar reparaciones según el estado seleccionado
+  const filteredRepairs = repairs.filter(repair => {
+    return filterStatus === 'all' || repair.status === filterStatus;
+  });
+
+  if (loading) return <LoadingSpinner />;
 
   const handleLogout = () => {
     logout();
     navigate('/login');
+    toast.success('Sesión cerrada correctamente');
   };
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#005bac]"></div>
-      </div>
-    );
-  }
 
   return (
     <div className="bg-[#f7f9fb] flex flex-col gap-0 items-start justify-start h-[800px] relative">
+      {/* Remove local Toaster since it's in App.jsx */}
+      {error && toast.error(error)}
+      
       {/* Header */}
       <div className="bg-[#005bac] pr-6 pl-6 flex flex-row items-center justify-between self-stretch shrink-0 h-16 relative">
         {/* Logo section */}
@@ -98,62 +101,17 @@ const ClientPage = () => {
           <p className="text-[#6e6e6e]">Consulta el estado de tus vehículos y reparaciones</p>
         </div>
 
-        {error && (
-          <div className="bg-red-50 text-red-500 p-4 rounded-lg">
-            {error}
+        {filteredRepairs.length === 0 ? (
+          <div className="text-center text-[#6e6e6e] py-8">
+            No hay reparaciones {filterStatus !== 'all' ? `en estado ${filterStatus}` : 'registradas'}
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4 w-full">
+            {filteredRepairs.map((repair) => (
+              <RepairCard key={repair.repair_id} repair={repair} />
+            ))}
           </div>
         )}
-
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-[#f7f9fb] border-b border-[#e0e0e0]">
-              <tr>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">ID</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Vehículo</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Descripción</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Técnico</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Fecha</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Estado</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#e0e0e0]">
-              {filteredRepairs.length === 0 ? (
-                <tr>
-                  <td colSpan="6" className="px-6 py-4 text-center text-[#6e6e6e]">
-                    No hay reparaciones {filterStatus !== 'all' ? `en estado ${filterStatus}` : 'registradas'}
-                  </td>
-                </tr>
-              ) : (
-                filteredRepairs.map((repair) => (
-                  <tr key={repair.repair_id} className="hover:bg-[#f7f9fb] transition-colors">
-                    <td className="px-6 py-4 text-sm">R-{String(repair.repair_id).padStart(3, '0')}</td>
-                    <td className="px-6 py-4">
-                      <div className="flex flex-col">
-                        <span className="text-sm font-medium">{repair.vehicle?.registration_number}</span>
-                        <span className="text-xs text-[#6e6e6e]">{repair.vehicle?.brand} {repair.vehicle?.model}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-sm">{repair.description}</td>
-                    <td className="px-6 py-4 text-sm">{repair.worker_name || 'N/A'}</td>
-                    <td className="px-6 py-4 text-sm">
-                      {new Date(repair.created_at).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`
-                        px-3 py-1.5 rounded-full text-xs font-medium
-                        ${repair.status === 'Pendiente' ? 'bg-[#f59e0b] text-white' : ''}
-                        ${repair.status === 'En curso' ? 'bg-[#005bac] text-white' : ''}
-                        ${repair.status === 'Finalizado' ? 'bg-[#84bd00] text-white' : ''}
-                      `}>
-                        {repair.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
       </div>
     </div>
   );

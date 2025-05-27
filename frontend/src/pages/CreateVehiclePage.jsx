@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'sonner';
+import { ClipLoader } from 'react-spinners';
 
 const CreateVehiclePage = () => {
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState(null);
 
   const API_URL = import.meta.env.VITE_API_URL;
@@ -27,6 +28,7 @@ const CreateVehiclePage = () => {
   // Opciones para los tipos de motor y combustible
   const engineTypes = ['Gasolina', 'Diésel', 'Eléctrico', 'Híbrido'];
   const fuelTypes = ['Gasolina', 'Diésel', 'Eléctrico', 'GLP', 'GNC'];
+
 
   useEffect(() => {
     fetchClients();
@@ -61,8 +63,7 @@ const CreateVehiclePage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitError(null);
-    setSubmitSuccess(false);
-
+    
     try {
       const response = await fetch(`${API_URL}vehicle/create`, {
         method: 'POST',
@@ -78,7 +79,7 @@ const CreateVehiclePage = () => {
         throw new Error(error.message || 'Error al crear el vehículo');
       }
 
-      setSubmitSuccess(true);
+      // Reset form
       setFormData({
         client_id: '',
         brand: '',
@@ -94,19 +95,23 @@ const CreateVehiclePage = () => {
         notes: ''
       });
 
-      // Limpiar mensaje de éxito después de 3 segundos
-      setTimeout(() => setSubmitSuccess(false), 3000);
+      toast.success('Vehículo creado correctamente');
+
     } catch (err) {
-      setSubmitError(err.message);
+      toast.error("Error: " + err.message);
     }
   };
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#005bac]"></div>
+        <ClipLoader color="#005bac" size={40} />
       </div>
     );
+  }
+
+  if (error) {
+    toast.error(error);
   }
 
   return (
@@ -124,12 +129,6 @@ const CreateVehiclePage = () => {
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6">
           Error al cargar los clientes: {error}
-        </div>
-      )}
-
-      {submitSuccess && (
-        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6">
-          Vehículo creado con éxito ✅
         </div>
       )}
 

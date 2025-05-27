@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import useWorkerRepairs from '../hooks/useWorkerRepairs';
 import useRepairForm from '../hooks/useRepairForm';
+import { toast } from 'sonner';
+import { ClipLoader } from 'react-spinners';
 
 const EditRepairPage = () => {
   const { repairId } = useParams();
@@ -55,7 +57,6 @@ const EditRepairPage = () => {
     setSubmitError(null);
 
     try {
-      // Actualizar updated_at antes de enviar
       const updatedData = {
         ...formData,
         updated_at: new Date().toISOString()
@@ -75,8 +76,10 @@ const EditRepairPage = () => {
         throw new Error(error.message || 'Error al actualizar la reparación');
       }
 
+      toast.success('Reparación actualizada correctamente');
       navigate('/worker/repairs');
     } catch (err) {
+      toast.error("Error: " + err.message);
       setSubmitError(err.message);
     } finally {
       setSubmitLoading(false);
@@ -86,7 +89,7 @@ const EditRepairPage = () => {
   if (repairsLoading || workersLoading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#005bac]"></div>
+        <ClipLoader color="#005bac" size={40} />
       </div>
     );
   }
@@ -94,11 +97,16 @@ const EditRepairPage = () => {
   const repair = repairs.find(r => r.repair_id === parseInt(repairId));
 
   if (!repair) {
+    toast.error("No se encontró la reparación");
     return (
       <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
         No se encontró la reparación
       </div>
     );
+  }
+
+  if (repairsError || workersError) {
+    toast.error(repairsError || workersError);
   }
 
   return (
@@ -139,11 +147,7 @@ const EditRepairPage = () => {
         </div>
       )}
 
-      {submitError && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6">
-          Error al guardar: {submitError}
-        </div>
-      )}
+      {submitError && toast.error(submitError)}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -221,7 +225,14 @@ const EditRepairPage = () => {
             disabled={submitLoading}
             className="px-6 py-2 bg-[#005bac] text-white rounded-lg hover:bg-[#004d91] disabled:bg-gray-300 disabled:cursor-not-allowed"
           >
-            {submitLoading ? 'Guardando...' : 'Guardar cambios'}
+            {submitLoading ? (
+              <div className="flex items-center gap-2">
+                <ClipLoader color="#ffffff" size={16} />
+                <span>Guardando...</span>
+              </div>
+            ) : (
+              'Guardar cambios'
+            )}
           </button>
         </div>
       </form>

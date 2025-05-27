@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
+import { toast } from 'sonner';
 
 const AuthContext = createContext();
 const VITE_API_URL = import.meta.env.VITE_API_URL;
@@ -131,15 +132,18 @@ export const AuthProvider = ({ children }) => {
 
         // Guardar en localStorage para recuperar la sesión después
         localStorage.setItem('user', JSON.stringify(userData));
+        toast.success('Inicio de sesión exitoso');
 
         return { success: true, user: userData };
       } else {
         setAuthError(data.message || 'Error de autenticación');
+        toast.error('Error de inicio de sesión: ' + (data.message || 'Error de autenticación'));
         return { success: false, message: data.message || 'Error de autenticación' };
       }
     } catch (error) {
       console.error("Login error:", error);
       setAuthError(error.message || 'Error en el servidor');
+      toast.error('Error de inicio de sesión: ' + (error.message || 'Error en el servidor'));
       return { success: false, message: error.message || 'Error en el servidor' };
     } finally {
       setIsLoading(false);
@@ -154,6 +158,7 @@ export const AuthProvider = ({ children }) => {
     // Actualizar estado
     setIsAuthenticated(false);
     setUser(null);
+    toast.success('Sesión cerrada correctamente');
   };
 
   const register = async (registrationData) => {

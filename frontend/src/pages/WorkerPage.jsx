@@ -3,12 +3,7 @@ import { Link } from 'react-router-dom';
 import { FiEdit2, FiTrash2, FiSearch } from 'react-icons/fi';
 import useWorkerRepairs from '../hooks/useWorkerRepairs';
 import ConfirmModal from '../components/ConfirmModal';
-
-const statusColors = {
-  'Pendiente': 'bg-[#e53935]',
-  'En curso': 'bg-[#005bac]',
-  'Finalizado': 'bg-[#84bd00]'
-};
+import { statusColors } from '../constants/colors';
 
 const StatusBadge = ({ status }) => (
   <div className={`${statusColors[status]} rounded-xl px-2 py-1 inline-flex items-center justify-center`}>

@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
-import { FiEye, FiEyeOff } from "react-icons/fi";
-// Importamos los iconos que necesitamos
-import { FiUsers, FiTool, FiUser } from "react-icons/fi";
+import { FiEye, FiEyeOff, FiUsers, FiTool, FiUser } from "react-icons/fi";
+import { toast } from 'sonner';
 
 const CreateUserPage = () => {
   const navigate = useNavigate();
@@ -31,7 +30,6 @@ const CreateUserPage = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [error, setError] = useState(null);
 
   const handleRoleSelect = (role) => {
     setSelectedRole(role);
@@ -48,11 +46,10 @@ const CreateUserPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
 
     try {
       if (formData.password !== formData.confirmPassword) {
-        setError("Las contraseñas no coinciden");
+        toast.error("Las contraseñas no coinciden");
         return;
       }
 
@@ -85,9 +82,10 @@ const CreateUserPage = () => {
       }
 
       await register(dataToSend);
+      toast.success('Usuario creado correctamente');
       navigate('/admin/users');
     } catch (err) {
-      setError(err.message || authError);
+      toast.error(err.message || authError || "Error al crear el usuario");
     }
   };
 
@@ -274,12 +272,6 @@ const CreateUserPage = () => {
       {/* Form - Shows when role is selected */}
       {selectedRole && (
         <form onSubmit={handleSubmit} className="flex flex-col gap-6 w-full">
-          {error && (
-            <div className="bg-red-50 text-red-500 p-4 rounded-lg">
-              {error}
-            </div>
-          )}
-
           {/* Common Fields */}
           <div className="grid grid-cols-2 gap-4">
             <div className="flex flex-col gap-2">

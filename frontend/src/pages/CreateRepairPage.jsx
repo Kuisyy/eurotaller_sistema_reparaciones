@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import useRepairForm from '../hooks/useRepairForm';
+import { toast } from 'sonner';
+import { ClipLoader } from 'react-spinners';
 
 const CreateRepairPage = () => {
   const { clients, vehicles, workers, selectedClient, setSelectedClient, loading, error } = useRepairForm();
@@ -33,9 +35,8 @@ const CreateRepairPage = () => {
     setSubmitLoading(true);
     setSubmitError(null);
 
-    // Verificar que tenemos los datos necesarios
     if (!selectedClient || !selectedVehicle || !selectedWorker || !description) {
-      setSubmitError("Todos los campos obligatorios deben completarse");
+      toast.error("Todos los campos obligatorios deben completarse");
       setSubmitLoading(false);
       return;
     }
@@ -64,34 +65,33 @@ const CreateRepairPage = () => {
         throw new Error(errorData.message || 'Error al crear la reparación');
       }
 
-      const responseData = await response.json();
-      console.log("Respuesta del servidor:", responseData);
-
+      
       setSelectedClient('');
       setSelectedVehicle('');
       setSelectedWorker('');
       setDescription('');
       setNotes('');
       setStatus('Pendiente');
-      setSubmitSuccess(true);
+      
+      toast.success('Reparación creada correctamente');
+
     } catch (err) {
-      console.error("Error en la creación de la reparación:", err);
-      setSubmitError(err.message);
+      toast.error("Error: " + err.message);
     } finally {
       setSubmitLoading(false);
     }
   };
 
   if (loading) {
-    return <div className="flex justify-center items-center h-64">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#005bac]"></div>
-    </div>;
+    return (
+      <div className="flex justify-center items-center h-64">
+        <ClipLoader color="#005bac" size={40} />
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-      Error: {error}
-    </div>;
+    toast.error(error);
   }
 
   return (
