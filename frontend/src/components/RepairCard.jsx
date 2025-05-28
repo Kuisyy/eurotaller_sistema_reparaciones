@@ -1,15 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FiTool, FiCalendar, FiTruck, FiFileText } from 'react-icons/fi';
 import { toast } from 'sonner';
 import StarRating from './StarRating';
 import { statusColors } from '../constants/colors';
 
 const RepairCard = ({ repair }) => {
-  const [rating, setRating] = useState(0);
+  const [rating, setRating] = useState(repair.rating || 0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleRatingChange = (newRating) => {
-    setRating(newRating);
-    toast.success('Calificación guardada correctamente');
+  const handleRatingChange = async (newRating) => {
+    setIsSubmitting(true);
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/repairs/${repair.repair_id}/rating`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ rating: newRating }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al actualizar la valoración');
+      }
+
+      setRating(newRating);
+      toast.success('Valoración guardada correctamente');
+    } catch (error) {
+      toast.error('Error al guardar la valoración');
+      console.error('Error:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const getStatusColor = (status) => {
@@ -82,13 +104,23 @@ const RepairCard = ({ repair }) => {
           </div>
         </div>
 
-        {/* Calificación - Solo si está finalizada */}
+        {/* Sección de valoración - solo visible en estado Finalizado */}
         {repair.status === 'Finalizado' && (
-          <div className="border-t border-[#e0e0e0] mt-4 pt-4">
-            <span className="text-sm text-[#6e6e6e] block mb-2">Calificación del servicio</span>
-            <StarRating rating={rating} setRating={handleRatingChange} />
+          <div className="border-t border-[#e0e0e0] mt-4 pt-4 px-6 pb-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-[#6e6e6e]">Valoración del servicio</span>
+              {isSubmitting && (
+                <span className="text-sm text-[#6e6e6e]">Guardando...</span>
+              )}
+            </div>
+            <StarRating 
+              rating={rating} 
+              setRating={handleRatingChange} 
+              readonly={false}
+            />
           </div>
         )}
+
       </div>
     </div>
   );

@@ -15,6 +15,7 @@ import vehicleRoutes from './src/routes/vehicle_routes.js';
 import repairRoutes from './src/routes/repair_routes.js';
 import authRoutes from './src/routes/auth_routes.js';
 import userRoutes from './src/routes/user_routes.js';
+import ratingRoutes from './src/routes/ratingRoutes.js';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -53,6 +54,7 @@ createTables()
     app.use('/repair', repairRoutes);
     app.use('/worker', workerRoutes);
     app.use('/admin', adminRoutes);
+    app.use('/rating', ratingRoutes);
 
     app.get('/', (req, res) => {
       res.send('¡El backend de EuroTaller está funcionando!');

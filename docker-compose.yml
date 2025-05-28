@@ -12,6 +12,7 @@ services:
       - eurotaller_network
     volumes:
       - db_data:/var/lib/postgresql/data
+      - ./backend/src/config/init:/docker-entrypoint-initdb.d
     restart: unless-stopped
 
 volumes:

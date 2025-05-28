@@ -12,6 +12,7 @@ const createRepairTable = async () => {
         date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
         status VARCHAR(20) DEFAULT 'Pendiente',
         notes TEXT,
+        rating INTEGER CHECK (rating >= 1 AND rating <= 5),
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP WITH TIME ZONE,
         FOREIGN KEY (vehicle_id) REFERENCES vehicles(vehicle_id) ON DELETE CASCADE,
