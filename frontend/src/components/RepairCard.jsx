@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { FiTool, FiCalendar, FiTruck, FiFileText } from 'react-icons/fi';
 import { toast } from 'sonner';
 import StarRating from './StarRating';
@@ -11,8 +11,8 @@ const RepairCard = ({ repair }) => {
   const handleRatingChange = async (newRating) => {
     setIsSubmitting(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/repairs/${repair.repair_id}/rating`, {
-        method: 'PUT',
+      const response = await fetch(`${import.meta.env.VITE_API_URL}rating/repair/${repair.repair_id}`, {
+        method: 'PUT', 
         headers: {
           'Content-Type': 'application/json',
         },

@@ -1,4 +1,4 @@
-import db from '../config/database.js';
+import db from '../config/db_config.js';
 
 export const updateRepairRating = async (req, res) => {
     const { repairId } = req.params;
