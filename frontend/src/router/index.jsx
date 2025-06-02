@@ -14,6 +14,8 @@ import UsersPage from '../pages/UsersPage.jsx';
 import ConditionalLayout from '../components/ConditionalLayout';
 import VehiclesPage from '../pages/VehiclesPage.jsx';
 import CreateUserPage from '../pages/CreateUserPage.jsx';
+import EditUserPage from '../pages/EditUserPage.jsx';
+import EditVehiclePage from '../pages/EditVehiclePage.jsx';
 
 export const router = createBrowserRouter([
   {
@@ -88,6 +90,22 @@ export const router = createBrowserRouter([
               </ConditionalLayout>
             ),
           },
+          {
+            path: 'vehicles',
+            element: (
+              <ConditionalLayout title="Vehículos">
+                <VehiclesPage />
+              </ConditionalLayout>
+            ),
+          },
+          {
+            path: 'vehicles/:vehicleId/edit',
+            element: (
+              <ConditionalLayout title="Editar Vehículo">
+                <EditVehiclePage />
+              </ConditionalLayout>
+            ),
+          }
         ],
       },
       {
@@ -142,14 +160,22 @@ export const router = createBrowserRouter([
               </AdminLayout>
             ),
           },
-          // {
-          //   path: 'vehicle/:vehicleId/edit',
-          //   element: (
-          //     <AdminLayout title="Editar Vehículo">
-          //       <EditVehiclePage />
-          //     </AdminLayout>
-          //   ),
-          // }
+          {
+            path: 'user/:userId/edit',
+            element: (
+              <AdminLayout title="Editar Usuario">
+                <EditUserPage />
+              </AdminLayout>
+            ),
+          },
+          {
+            path: 'vehicles/:vehicleId/edit',
+            element: (
+              <AdminLayout title="Editar Vehículo">
+                <EditVehiclePage />
+              </AdminLayout>
+            ),
+          }
         ],
       },
       {

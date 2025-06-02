@@ -67,20 +67,36 @@ const createClient = async (req, res) => {
 
 // Función para actualizar un cliente
 const updateClient = async (req, res) => {
-    const { id } = req.params;
-    const clientData = req.body;
-    try {
-        const updatedClient = await clientModel.updateClient(id, clientData);
-        if (updatedClient) {
-            res.status(200).json(updatedClient);
-        } else {
-            res.status(404).json({ message: 'Cliente no encontrado' });
-        }
-    } catch (error) {
-        res.status(500).json({ error: 'Error al actualizar el cliente' });
+  const { id } = req.params;
+  const clientData = req.body;
+  
+  try {
+    if (!id || isNaN(id)) {
+      return res.status(400).json({ message: 'ID de cliente inválido' });
     }
-};
 
+    if (!clientData || Object.keys(clientData).length === 0) {
+      return res.status(400).json({ message: 'No se proporcionaron datos para actualizar' });
+    }
+
+    const updatedClient = await clientModel.updateClient(id, clientData);
+    
+    if (updatedClient) {
+      res.status(200).json({
+        message: 'Cliente actualizado exitosamente',
+        client: updatedClient
+      });
+    } else {
+      res.status(404).json({ message: 'Cliente no encontrado' });
+    }
+  } catch (error) {
+    console.error('Error al actualizar cliente:', error);
+    res.status(500).json({ 
+      error: 'Error interno del servidor',
+      message: 'No se pudo actualizar el cliente'
+    });
+  }
+};
 // Función para eliminar un cliente
 const deleteClient = async (req, res) => {
     const { id } = req.params;

@@ -59,23 +59,42 @@ const createUser = async (req, res) => {
 const updateUser = async (req, res) => {
   const { id } = req.params;
   const userData = req.body;
+  
   try {
-     // Hashear la contraseña si se proporciona en la actualización
+    // Validar que el ID sea válido
+    if (!id || isNaN(id)) {
+      return res.status(400).json({ message: 'ID de usuario inválido' });
+    }
+
+    // Validar que se envíen datos para actualizar
+    if (!userData || Object.keys(userData).length === 0) {
+      return res.status(400).json({ message: 'No se proporcionaron datos para actualizar' });
+    }
+
+    // Hashear la contraseña si se proporciona en la actualización
     if (userData.password) {
       const hashedPassword = await bcrypt.hash(userData.password, 10);
       userData.password = hashedPassword;
     }
+
     const updatedUser = await userModel.updateUser(id, userData);
+    
     if (updatedUser) {
-      res.status(200).json(updatedUser);
+      res.status(200).json({
+        message: 'Usuario actualizado exitosamente',
+        user: updatedUser
+      });
     } else {
       res.status(404).json({ message: 'Usuario no encontrado' });
     }
   } catch (error) {
-    res.status(500).json({ error: 'Error al actualizar el usuario' });
+    console.error('Error al actualizar usuario:', error);
+    res.status(500).json({ 
+      error: 'Error interno del servidor',
+      message: 'No se pudo actualizar el usuario'
+    });
   }
 };
-
 // Función para eliminar un usuario
 const deleteUser = async (req, res) => {
   const { id } = req.params;

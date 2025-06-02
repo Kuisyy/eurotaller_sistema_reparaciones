@@ -13,7 +13,7 @@ BEGIN
         ) VALUES (
             'Administrador',
             'admin@eurotaller.com',
-            '$2a$10$YK0X4V8uqjM2xrRsgTqYmehguzxvGZRJlrv4.JSzv6pY6o5KsGFRO',
+            '$2a$12$zf/y6lUSxFaHtMv5izmXOO58RLS.z/2.Mj2/P39DxWbIjS8B1/ALK',
             'admin'
         ) RETURNING user_id INTO user_id_var;
 

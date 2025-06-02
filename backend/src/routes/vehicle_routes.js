@@ -10,7 +10,7 @@ router.get('/all', vehicleController.getAllVehicles);
 router.get('/:id', vehicleController.getVehicleById);
 router.get('/client/:id', vehicleController.getVehicleByClientId);
 router.post('/create', vehicleController.createVehicle);
-router.put('/:id', vehicleController.updateVehicle);
+router.put('/update/:id', vehicleController.updateVehicle);
 router.delete('/:id', vehicleController.deleteVehicle);
 
 export default router;

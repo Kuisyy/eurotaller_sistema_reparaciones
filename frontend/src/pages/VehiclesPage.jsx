@@ -3,8 +3,10 @@ import { Link } from "react-router-dom";
 import { FiEdit2, FiTrash2, FiSearch } from "react-icons/fi";
 import useVehicles from "../hooks/useVehicles.js";
 import ConfirmModal from '../components/ConfirmModal';
+import { useAuth } from '../context/AuthContext';
 
 const VehiclesPage = () => {
+  const { user } = useAuth();
   const {
     vehicles,
     loading,
@@ -46,19 +48,16 @@ const VehiclesPage = () => {
 
   return (
     <div className="flex flex-col gap-0 items-start justify-start self-stretch flex-1 relative">
-      {/* Header - Añadido padding bottom */}
-      <div className="border-solid border-[#e0e0e0] border-b pr-8 pl-8 pb-4 flex flex-row items-center justify-between self-stretch shrink-0 h-16 relative">
+      <div className="border-b border-[#e0e0e0] px-8 py-4 flex justify-between items-center w-full">
         <div className="text-[#2c2c2c] text-left text-lg leading-[21.6px] font-bold">
           Gestión de Vehículos
         </div>
-        <div className="flex flex-row gap-4 items-center justify-end">
-          <Link
-            to="/admin/create-vehicle"
-            className="bg-[#005bac] hover:bg-[#004d91] rounded-lg px-4 h-10 flex items-center gap-2 text-white"
-          >
-            <span className="text-sm font-semibold">Nuevo Vehículo</span>
-          </Link>
-        </div>
+        <Link
+          to={`/${user.role}/create-vehicle`}
+          className="bg-[#005bac] hover:bg-[#004d91] rounded-lg px-4 h-10 flex items-center gap-2 text-white"
+        >
+          <span className="text-sm font-semibold">Nuevo Vehículo</span>
+        </Link>
       </div>
 
       {/* Filters - Añadido padding top */}
@@ -173,7 +172,7 @@ const VehiclesPage = () => {
                 </div>
                 <div className="w-28 flex gap-2 justify-center">
                   <Link
-                    to={`/admin/vehicle/${vehicle.vehicle_id}/edit`}
+                    to={`/${user.role}/vehicles/${vehicle.vehicle_id}/edit`}
                     className="w-9 h-9 rounded-full flex items-center justify-center bg-[#f7f9fb] hover:bg-[#e6e6e6] transition-colors"
                   >
                     <FiEdit2 className="w-4 h-4 text-[#6e6e6e]" />

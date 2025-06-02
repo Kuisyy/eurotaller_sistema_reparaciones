@@ -42,17 +42,38 @@ const createUser = async (userData) => {
 
 const updateUser = async (id, userData) => {
   try {
-    const { name, email, password, role } = userData;
+    // Obtener el usuario actual primero para manejar campos no proporcionados
+    const currentUser = await db.oneOrNone(
+      'SELECT * FROM users WHERE user_id = $1', 
+      [id]
+    );
+    
+    if (!currentUser) {
+      return null;
+    }
+
+    // Usar los valores actuales si no se proporcionan nuevos
+    const { 
+      name = currentUser.name, 
+      email = currentUser.email, 
+      password = currentUser.password, 
+      role = currentUser.role 
+    } = userData;
+
     const updatedUser = await db.oneOrNone(
-      `UPDATE users SET name = $1, email = $2, password = $3, role = $4, updated_at = CURRENT_TIMESTAMP WHERE user_id = $5 RETURNING user_id, name, email, role, created_at, updated_at`,
+      `UPDATE users 
+       SET name = $1, email = $2, password = $3, role = $4, updated_at = CURRENT_TIMESTAMP 
+       WHERE user_id = $5 
+       RETURNING user_id, name, email, role, created_at, updated_at`,
       [name, email, password, role, id]
     );
+    
     return updatedUser;
   } catch (error) {
+    console.error('Error en modelo updateUser:', error);
     throw error;
   }
 };
-
 const deleteUser = async (id) => {
   try {
     const deleted = await db.oneOrNone('DELETE FROM users WHERE user_id = $1 RETURNING user_id', [id]);

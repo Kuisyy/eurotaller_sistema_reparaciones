@@ -2,7 +2,7 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 
 const PasswordInput = ({ label, show, onToggle, ...props }) => (
   <div className="flex flex-col gap-2">
-    <label className="text-sm font-medium text-[#2c2c2c]">{label} *</label>
+    <label className="text-sm font-medium text-[#2c2c2c]">{label} </label>
     <div className="relative">
       <input
         type={show ? "text" : "password"}

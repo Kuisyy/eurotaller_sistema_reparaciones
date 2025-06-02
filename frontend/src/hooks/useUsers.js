@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner'; 
 
 const useUsers = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [successMessage, setSuccessMessage] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
 
@@ -45,19 +45,17 @@ const useUsers = () => {
         credentials: 'include'
       });
 
-      if (!response.ok) throw new Error('Error al eliminar el usuario');
-      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Error al eliminar el usuario');
+      }
+
       await fetchUsers();
-      setSuccessMessage('Usuario eliminado correctamente');
-      
-      setTimeout(() => {
-        setSuccessMessage(null);
-      }, 3000);
-    } catch (err) {
-      setError(err.message);
-    } finally {
+      toast.success('Usuario eliminado correctamente');
       setShowDeleteModal(false);
       setUserToDelete(null);
+    } catch (err) {
+      toast.error(err.message);
     }
   };
 
@@ -84,11 +82,10 @@ const useUsers = () => {
     setSearchQuery,
     showDeleteModal,
     setShowDeleteModal,
-    handleDeleteClick,
     userToDelete,
-    deleteUser,
-    successMessage,
-    refreshUsers: fetchUsers
+    setUserToDelete,
+    handleDeleteClick,
+    deleteUser
   };
 };
 

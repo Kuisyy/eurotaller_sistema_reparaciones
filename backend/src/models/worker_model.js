@@ -60,20 +60,34 @@ const createWorker = async (workerData) => {
 
 const updateWorker = async (id, workerData) => {
   try {
-    const {  role } = workerData;
+    // Obtener el trabajador actual primero
+    const currentWorker = await db.oneOrNone(
+      'SELECT * FROM workers WHERE user_id = $1', 
+      [id]
+    );
+    
+    if (!currentWorker) {
+      return null;
+    }
+
+    const { 
+      worker_role = currentWorker.role
+    } = workerData;
+
     const updatedWorker = await db.oneOrNone(
       `UPDATE workers 
-       SET  role = $2
-       WHERE worker_id = $1
-       RETURNING worker_id, user_id, role`,
-      [id, role]
+       SET role = $2, updated_at = CURRENT_TIMESTAMP
+       WHERE user_id = $1
+       RETURNING worker_id, user_id, role, created_at, updated_at`,
+      [id, worker_role]
     );
+    
     return updatedWorker;
   } catch (error) {
+    console.error('Error en modelo updateWorker:', error);
     throw error;
   }
 };
-
 const deleteWorker = async (id) => {
   try {
     const deleted = await db.oneOrNone('DELETE FROM workers WHERE worker_id = $1 RETURNING worker_id', [id]);

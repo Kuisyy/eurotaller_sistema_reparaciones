@@ -4,6 +4,7 @@ import { FiEdit2, FiTrash2, FiSearch } from 'react-icons/fi';
 import useWorkerRepairs from '../hooks/useWorkerRepairs';
 import ConfirmModal from '../components/ConfirmModal';
 import { statusColors } from '../constants/colors';
+import StarRating from '../components/StarRating';
 
 const StatusBadge = ({ status }) => (
   <div className={`${statusColors[status]} rounded-xl px-2 py-1 inline-flex items-center justify-center`}>
@@ -114,6 +115,7 @@ const WorkerPage = ({ className }) => {
                 <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Descripción</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Fecha de Entrada</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Estado</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Calificación</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Acciones</th>
               </tr>
             </thead>
@@ -154,6 +156,20 @@ const WorkerPage = ({ className }) => {
                   </td>
                   <td className="px-6 py-4">
                     <StatusBadge status={repair.status} />
+                  </td>
+                  <td className="px-6 py-4">
+                    {repair.status === 'Finalizado' ? (
+                      repair.rating ? (
+                        <div className="flex items-center gap-2">
+                          <StarRating rating={repair.rating} />
+
+                        </div>
+                      ) : (
+                        <span className="text-sm text-gray-400">Sin calificar</span>
+                      )
+                    ) : (
+                      <span className="text-sm text-gray-400">-</span>
+                    )}
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">

@@ -60,16 +60,38 @@ const createClient = async (clientData) => {
 
 const updateClient = async (id, clientData) => {
   try {
-    const { address, postal_code, city, province, country, nif, phone } = clientData;
+    const currentClient = await db.oneOrNone(
+      'SELECT * FROM clients WHERE user_id = $1', 
+      [id]
+    );
+    
+    if (!currentClient) {
+      return null;
+    }
+
+    // Usar los valores actuales si no se proporcionan nuevos
+    const { 
+      address = currentClient.address, 
+      postal_code = currentClient.postal_code, 
+      city = currentClient.city, 
+      province = currentClient.province,
+      country = currentClient.country,
+      nif = currentClient.nif,
+      phone = currentClient.phone
+    } = clientData;
+
     const updatedClient = await db.oneOrNone(
-      `UPDATE clients SET  address = $2, postal_code = $3, city = $4, province = $5,
-             country = $6, nif = $7, phone = $8,updated_at = CURRENT_TIMESTAMP
-             WHERE client_id = $1
-             RETURNING client_id, user_id, address, postal_code, city, province, country, nif, phone`,
+      `UPDATE clients 
+      SET address = $2, postal_code = $3, city = $4, province = $5,
+          country = $6, nif = $7, phone = $8, updated_at = CURRENT_TIMESTAMP
+      WHERE user_id = $1
+      RETURNING client_id, user_id, address, postal_code, city, province, country, nif, phone, created_at, updated_at`,
       [id, address, postal_code, city, province, country, nif, phone]
     );
+    
     return updatedClient;
   } catch (error) {
+    console.error('Error en modelo updateClient:', error);
     throw error;
   }
 };

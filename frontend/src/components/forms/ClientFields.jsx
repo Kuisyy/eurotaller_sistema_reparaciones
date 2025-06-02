@@ -22,7 +22,6 @@ const ClientFields = ({ formData, onChange }) => (
         required
       />
     </div>
-    {/* ...resto de campos del cliente... */}
   </>
 );
 

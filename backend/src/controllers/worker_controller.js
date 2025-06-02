@@ -45,15 +45,34 @@ const createWorker = async (req, res) => {
 const updateWorker = async (req, res) => {
   const { id } = req.params;
   const workerData = req.body;
+  
   try {
+    // Validar que el ID sea válido
+    if (!id || isNaN(id)) {
+      return res.status(400).json({ message: 'ID de trabajador inválido' });
+    }
+
+    // Validar que se envíen datos para actualizar
+    if (!workerData || Object.keys(workerData).length === 0) {
+      return res.status(400).json({ message: 'No se proporcionaron datos para actualizar' });
+    }
+
     const updatedWorker = await workerModel.updateWorker(id, workerData);
+    
     if (updatedWorker) {
-      res.status(200).json(updatedWorker);
+      res.status(200).json({
+        message: 'Trabajador actualizado exitosamente',
+        worker: updatedWorker
+      });
     } else {
       res.status(404).json({ message: 'Trabajador no encontrado' });
     }
   } catch (error) {
-    res.status(500).json({ error: 'Error al actualizar el trabajador' });
+    console.error('Error al actualizar trabajador:', error);
+    res.status(500).json({ 
+      error: 'Error interno del servidor',
+      message: 'No se pudo actualizar el trabajador'
+    });
   }
 };
 

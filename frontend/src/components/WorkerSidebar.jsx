@@ -34,18 +34,17 @@ export const WorkerSidebar = () => {
         </div>
 
         <div className="p-4 flex flex-col gap-1">
-          <div className="text-[#6e6e6e] text-xs font-semibold">
-            GESTIÓN
+          {/* Sección de Reparaciones */}
+          <div className="text-[#6e6e6e] text-xs font-semibold mt-4">
+            REPARACIONES
           </div>
-
           <Link
             to="/worker/repairs"
-            className={`rounded px-3 flex items-center h-10 gap-3 ${isActive('/worker/repair')}`}
+            className={`rounded px-3 flex items-center h-10 gap-3 ${isActive('/worker/repairs')}`}
           >
             <FiTool className="w-4 h-4" />
             <span className="text-sm">Ver Reparaciones</span>
           </Link>
-
           <Link
             to="/worker/create-repair"
             className={`rounded px-3 flex items-center h-10 gap-3 ${isActive('/worker/create-repair')}`}
@@ -54,20 +53,35 @@ export const WorkerSidebar = () => {
             <span className="text-sm">Crear Reparación</span>
           </Link>
 
+          {/* Sección de Vehículos */}
+          <div className="text-[#6e6e6e] text-xs font-semibold mt-4">
+            VEHÍCULOS
+          </div>
+          <Link
+            to="/worker/vehicles"
+            className={`rounded px-3 flex items-center h-10 gap-3 ${isActive('/worker/vehicles')}`}
+          >
+            <FiTruck className="w-4 h-4" />
+            <span className="text-sm">Ver Vehículos</span>
+          </Link>
+          <Link
+            to="/worker/create-vehicle"
+            className={`rounded px-3 flex items-center h-10 gap-3 ${isActive('/worker/create-vehicle')}`}
+          >
+            <FiTruck className="w-4 h-4" />
+            <span className="text-sm">Crear Vehículo</span>
+          </Link>
+
+          {/* Sección de Clientes */}
+          <div className="text-[#6e6e6e] text-xs font-semibold mt-4">
+            CLIENTES
+          </div>
           <Link
             to="/worker/create-client"
             className={`rounded px-3 flex items-center h-10 gap-3 ${isActive('/worker/create-client')}`}
           >
             <FiUserPlus className="w-4 h-4" />
             <span className="text-sm">Crear Cliente</span>
-          </Link>
-
-          <Link
-            to="/worker/create-vehicle"
-            className={`rounded px-3 flex items-center h-10 gap-3 ${isActive('/worker/crear-vehiculo')}`}
-          >
-            <FiTruck className="w-4 h-4" />
-            <span className="text-sm">Crear Vehículo</span>
           </Link>
         </div>
       </div>

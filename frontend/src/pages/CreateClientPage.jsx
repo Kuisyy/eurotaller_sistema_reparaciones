@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import { useAuth } from '../context/AuthContext.jsx';
+import { toast } from 'sonner';
+import PasswordInput from '../components/forms/PasswordInput';
 
 const CreateClientPage = ({ className }) => {
   const [formData, setFormData] = useState({
@@ -14,11 +15,13 @@ const CreateClientPage = ({ className }) => {
     country: 'España',
     nif: '',
     password: '',
+    confirmPassword: '',
     role: 'client',
   });
 
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const { registerClient, authError, authSuccess } = useAuth(); // Usamos el hook useAuth
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { registerClient } = useAuth();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,18 +31,20 @@ const CreateClientPage = ({ className }) => {
     }));
   };
 
-  const togglePasswordVisibility = () => {
-    setPasswordVisible(!passwordVisible);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Llamamos a la función registerClient del contexto
+
+    // Validar que las contraseñas coincidan
+    if (formData.password !== formData.confirmPassword) {
+      toast.error('Las contraseñas no coinciden');
+      return;
+    }
+
     const registrationResult = await registerClient(formData);
 
     if (registrationResult && registrationResult.success) {
-
-      setFormData({ // Limpiar el formulario
+      toast.success('Cliente registrado correctamente');
+      setFormData({
         name: '',
         email: '',
         phone: '',
@@ -50,10 +55,9 @@ const CreateClientPage = ({ className }) => {
         country: 'España',
         nif: '',
         password: '',
+        confirmPassword: '',
         role: 'client',
       });
-    } else {
-      // Si hay un error, el mensaje de error se mostrará a través del contexto.
     }
   };
 
@@ -84,21 +88,6 @@ const CreateClientPage = ({ className }) => {
                 Completa todos los campos para registrar un nuevo cliente{" "}
               </div>
             </div>
-            {/* Mensajes de error y éxito */}
-            {authError && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                <strong className="font-bold">Error!</strong>
-                <span className="block sm:inline">{authError}</span>
-              </div>
-            )}
-              {authSuccess && (
-                <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-                  <span className="flex items-center gap-2 sm:inline">
-                    {authSuccess}
-
-                  </span>
-                </div>
-              )}
             <div className="flex flex-col gap-5 items-start justify-start self-stretch shrink-0 relative">
               <div className="flex flex-row gap-4 items-start justify-start self-stretch shrink-0 relative">
                 <div className="flex flex-col gap-2 items-start justify-start flex-1 relative">
@@ -230,25 +219,40 @@ const CreateClientPage = ({ className }) => {
                   required
                 />
               </div>
-              <div className="flex flex-col gap-2 items-start justify-start self-stretch shrink-0 relative">
-                <div className="text-[#2c2c2c] text-left font-['Inter-Medium',_sans-serif] text-sm leading-[16.8px] font-medium relative self-stretch">
-                  Contraseña *{" "}
+              <div className="flex flex-row gap-4 items-start justify-start self-stretch shrink-0 relative">
+                <div className="flex flex-col gap-2 items-start justify-start flex-1 relative">
+                  <div className="text-[#2c2c2c] text-left font-['Inter-Medium',_sans-serif] text-sm leading-[16.8px] font-medium relative self-stretch">
+                    Contraseña *
+                  </div>
+                  <div className="relative w-full">
+                    <PasswordInput
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      show={showPassword}
+                      onToggle={() => setShowPassword(!showPassword)}
+                      placeholder="Introduce la contraseña"
+                      className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative w-full"
+                      required
+                    />
+                  </div>
                 </div>
-                <div className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative">
-                  <input
-                    type={passwordVisible ? 'text' : 'password'}
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    className="flex-1 outline-none"
-                    placeholder="Introduce la contraseña"
-                    required
-                  />
-                  <div
-                    className="cursor-pointer pl-2"
-                    onClick={togglePasswordVisibility}
-                  >
-                    {passwordVisible ? <AiFillEye /> : <AiFillEyeInvisible />}
+
+                <div className="flex flex-col gap-2 items-start justify-start flex-1 relative">
+                  <div className="text-[#2c2c2c] text-left font-['Inter-Medium',_sans-serif] text-sm leading-[16.8px] font-medium relative self-stretch">
+                    Confirmar Contraseña * 
+                  </div>
+                  <div className="relative w-full">
+                    <PasswordInput
+                      name="confirmPassword"
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                      show={showConfirmPassword}
+                      onToggle={() => setShowConfirmPassword(!showConfirmPassword)}
+                      placeholder="Confirma la contraseña"
+                      className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative w-full"
+                      required
+                    />
                   </div>
                 </div>
               </div>

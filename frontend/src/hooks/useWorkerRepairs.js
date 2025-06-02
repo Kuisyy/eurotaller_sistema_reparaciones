@@ -16,7 +16,6 @@ const useWorkerRepairs = () => {
   const fetchRepairDetails = async () => {
     try {
       setLoading(true);
-      // 1. Obtener todas las reparaciones
       const repairsResponse = await fetch(`${API_URL}repair/all`, {
         credentials: 'include'
       });
@@ -24,7 +23,6 @@ const useWorkerRepairs = () => {
       if (!repairsResponse.ok) throw new Error('Error al obtener las reparaciones');
       const repairsData = await repairsResponse.json();
 
-      // 2. Para cada reparación, obtener los detalles del vehículo y cliente
       const repairsWithDetails = await Promise.all(
         repairsData.map(async (repair) => {
           try {
@@ -50,7 +48,8 @@ const useWorkerRepairs = () => {
               ...repair,
               vehicle: vehicleData,
               client: clientData,
-              worker: workerData
+              worker: workerData,
+              rating: repair.rating || 0 // Asegurarnos de que siempre tengamos un valor
             };
           } catch (error) {
             console.error(`Error fetching details for repair ${repair.repair_id}:`, error);
@@ -58,7 +57,8 @@ const useWorkerRepairs = () => {
               ...repair,
               vehicle: null,
               client: null,
-              worker: null
+              worker: null,
+              rating: 0
             };
           }
         })

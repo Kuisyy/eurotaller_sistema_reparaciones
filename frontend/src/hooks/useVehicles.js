@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 
 const useVehicles = () => {
   const [vehicles, setVehicles] = useState([]);
@@ -80,23 +81,17 @@ const useVehicles = () => {
         credentials: 'include'
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.message || 'Error al eliminar el vehículo');
+        const error = await response.json();
+        throw new Error(error.message || 'Error al eliminar el vehículo');
       }
 
       await fetchVehicles();
-      setSuccessMessage('Vehículo eliminado correctamente');
-      
-      setTimeout(() => {
-        setSuccessMessage(null);
-      }, 3000);
-    } catch (err) {
-      setError(err.message);
-    } finally {
+      toast.success('Vehículo eliminado correctamente');
       setShowDeleteModal(false);
       setVehicleToDelete(null);
+    } catch (err) {
+      toast.error(err.message);
     }
   };
 
