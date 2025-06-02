@@ -4,174 +4,100 @@ import { toast } from 'sonner';
 const AuthContext = createContext();
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 
-// Función auxiliar para obtener el token de las cookies
-const getTokenFromCookies = () => {
-  return document.cookie
-    .split('; ')
-    .find(cookie => cookie.startsWith('auth_token='))
-    ?.split('=')[1];
-};
-
-const getUserFromLocalStorage = () => {
-  try {
-    const storedUser = localStorage.getItem('user');
-    return storedUser ? JSON.parse(storedUser) : null;
-  } catch (error) {
-    console.error("Error parsing user from localStorage:", error);
-    return null;
-  }
-};
-
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [authError, setAuthError] = useState(null); // Para errores de autenticación/registro
-  const [authSuccess, setAuthSuccess] = useState(null); // Para mensajes de éxito
 
   const checkAuth = async () => {
     setIsLoading(true);
-
-    // Primero intentamos obtener el token de las cookies
-    const token = getTokenFromCookies();
-
-    // También verificamos si hay datos de usuario en localStorage
-    const storedUser = getUserFromLocalStorage();
-
-    // Si no hay token ni datos de usuario almacenados, no estamos autenticados
-    if (!token && !storedUser) {
-      setIsAuthenticated(false);
-      setUser(null);
-      setIsLoading(false);
-      return;
-    }
-
-    // Si hay un token, verificamos con el servidor
-    if (token) {
-      try {
-        const response = await fetch(`${VITE_API_URL}auth/check-auth`, {
-          method: 'GET',
-          credentials: 'include',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setIsAuthenticated(true);
-          setUser({
-            userId: data.userId,
-            role: data.role,
-            name: data.user,
-            email: data.email
-          });
-          // Actualizar localStorage con los datos más recientes
-          localStorage.setItem('user', JSON.stringify(data));
-        } else {
-          // Si la verificación falla, pero tenemos datos en localStorage,
-          // podemos usar esos datos para mantener la sesión
-          if (storedUser) {
-            setIsAuthenticated(true);
-            setUser(storedUser);
-          } else {
-            setIsAuthenticated(false);
-            setUser(null);
-            localStorage.removeItem('user');
-          }
-        }
-      } catch (error) {
-        console.error("Error checking auth:", error);
-        // Si hay un error en la verificación pero tenemos datos almacenados,
-        // usamos esos datos para mantener la sesión (modo offline)
-        if (storedUser) {
-          setIsAuthenticated(true);
-          setUser(storedUser);
-        } else {
-          setIsAuthenticated(false);
-          setUser(null);
-          localStorage.removeItem('user');
-        }
-      }
-    } else if (storedUser) {
-      // Si no hay token pero hay datos en localStorage, restauramos la sesión
-      setIsAuthenticated(true);
-      setUser(storedUser);
-    }
-
-    setIsLoading(false);
-  };
-
-  useEffect(() => {
-    checkAuth(); // Verificar la autenticación al cargar el componente
-  }, []);
-
-  const login = async (email, password) => {
-    setIsLoading(true);
-    setAuthError(null); // Limpiar errores previos
     try {
-      const response = await fetch(`${VITE_API_URL}auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-        credentials: 'include',
+      const response = await fetch(`${VITE_API_URL}auth/me`, {
+        credentials: 'include'
       });
 
-      const data = await response.json();
-
       if (response.ok) {
-        const userData = {
-          userId: data.user.userId,
-          role: data.user.role,
-          name: data.user.name,
-          email: data.user.email,
-        };
-
-        setIsAuthenticated(true);
-        setUser(userData);
-
-        // Guardar en localStorage para recuperar la sesión después
-        localStorage.setItem('user', JSON.stringify(userData));
-        toast.success('Inicio de sesión exitoso');
-
-        return { success: true, user: userData };
+        const userData = await response.json();
+        // Verificar si el estado del usuario ha cambiado
+        if (
+          !user || 
+          user.userId !== userData.userId || 
+          user.role !== userData.role || 
+          user.email !== userData.email
+        ) {
+          setUser(userData);
+          setIsAuthenticated(true);
+        }
       } else {
-        setAuthError(data.message || 'Error de autenticación');
-        toast.error('Error de inicio de sesión: ' + (data.message || 'Error de autenticación'));
-        return { success: false, message: data.message || 'Error de autenticación' };
+        // Solo actualizar estados y mostrar mensaje si el usuario estaba autenticado
+        if (isAuthenticated || user) {
+          setUser(null);
+          setIsAuthenticated(false);
+          if (response.status === 401) {
+            toast.error('Sesión expirada');
+          }
+        }
       }
     } catch (error) {
-      console.error("Login error:", error);
-      setAuthError(error.message || 'Error en el servidor');
-      toast.error('Error de inicio de sesión: ' + (error.message || 'Error en el servidor'));
-      return { success: false, message: error.message || 'Error en el servidor' };
+      if (isAuthenticated || user) {
+        setUser(null);
+        setIsAuthenticated(false);
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
-  const logout = () => {
-    // Eliminar cookie de autenticación
-    document.cookie = "auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    // Eliminar datos de usuario del localStorage
-    localStorage.removeItem('user');
-    // Actualizar estado
-    setIsAuthenticated(false);
-    setUser(null);
-    toast.success('Sesión cerrada correctamente');
+  const login = async (email, password) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${VITE_API_URL}auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        await checkAuth(); // Verificar autenticación después del login
+        toast.success('Inicio de sesión exitoso');
+        return { success: true, user: data.user };
+      } else {
+        toast.error(data.message || 'Error de autenticación');
+        return { success: false, message: data.message };
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      toast.error('Error de conexión');
+      return { success: false, message: error.message };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await fetch(`${VITE_API_URL}auth/logout`, {
+        method: 'POST',
+        credentials: 'include'
+      });
+      setIsAuthenticated(false);
+      setUser(null);
+      toast.success('Sesión cerrada correctamente');
+    } catch (error) {
+      console.error('Logout error:', error);
+      toast.error('Error al cerrar sesión');
+    }
   };
 
   const register = async (registrationData) => {
     setIsLoading(true);
-    setAuthError(null);
-    setAuthSuccess(null);
-    
     try {
       const response = await fetch(`${VITE_API_URL}auth/register`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify(registrationData),
       });
@@ -179,22 +105,22 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json();
 
       if (response.ok) {
-        console.log('Registro exitoso:', data);
-        setAuthSuccess(`${registrationData.role === 'admin' ? 'Administrador' : 'Trabajador'} registrado correctamente.`);
+        toast.success(`${registrationData.role === 'admin' ? 'Administrador' : 'Usuario'} registrado correctamente`);
         return { success: true, data };
       } else {
-        setAuthError(data.message || 'Error en el registro.');
-        return { success: false, message: data.message || 'Error en el registro.' };
+        toast.error(data.message || 'Error en el registro');
+        return { success: false, message: data.message };
       }
     } catch (error) {
-      console.error("Registration error:", error);
-      setAuthError(error.message || 'Error de conexión con el servidor.');
-      return { success: false, message: error.message || 'Error de conexión con el servidor.' };
+      console.error('Registration error:', error);
+      toast.error('Error de conexión');
+      return { success: false, message: error.message };
     } finally {
       setIsLoading(false);
     }
   };
 
+  // Mantener las funciones específicas de registro
   const registerClient = async (clientData) => {
     return register({ ...clientData, role: 'client' });
   };
@@ -207,6 +133,21 @@ export const AuthProvider = ({ children }) => {
     return register({ ...adminData, role: 'admin' });
   };
 
+  // Añadir un interceptor para verificar la autenticación periódicamente
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (isAuthenticated) {
+        checkAuth();
+      }
+    }, 5 * 60 * 1000); // Verificar cada 5 minutos
+
+    return () => clearInterval(interval);
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
   const value = {
     isAuthenticated,
     user,
@@ -214,12 +155,12 @@ export const AuthProvider = ({ children }) => {
     logout,
     isLoading,
     checkAuth,
-    register,        // Función general de registro
-    registerClient,  // Función específica para clientes
-    registerWorker,  // Función específica para trabajadores
-    registerAdmin,   // Función específica para administradores
-    authError,
-    authSuccess,
+    register,
+    registerClient,
+    registerWorker,
+    registerAdmin,
+    getRole: () => user?.role,
+    getUserId: () => user?.userId
   };
 
   return (
@@ -229,11 +170,10 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// Hook personalizado para usar el contexto de autenticación
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("UseAuth must be used within an AuthProvider");
+    throw new Error('useAuth debe usarse dentro de AuthProvider');
   }
   return context;
 };

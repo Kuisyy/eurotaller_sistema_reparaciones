@@ -51,16 +51,17 @@ const WorkerPage = ({ className }) => {
 
   return (
     <div className={`flex flex-col gap-0 items-start justify-start self-stretch flex-1 relative ${className}`}>
-      <div className="border-b border-[#e0e0e0] px-8 py-4 flex justify-between items-center w-full">
+      {/* Header con responsive */}
+      <div className="border-b border-[#e0e0e0] px-4 md:px-8 py-4 flex flex-col md:flex-row justify-between items-start md:items-center w-full gap-4">
         <Link 
           to="/worker/create-repair"
-          className="bg-[#005bac] hover:bg-[#004d91] transition-colors px-4 py-2 rounded-lg text-white flex items-center gap-2"
+          className="bg-[#005bac] hover:bg-[#004d91] transition-colors px-4 py-2 rounded-lg text-white flex items-center gap-2 w-full md:w-auto justify-center md:justify-start"
         >
           <span className="text-sm font-semibold">Nueva Reparación</span>
         </Link>
       </div>
 
-      <div className="p-8 space-y-6 w-full">
+      <div className="p-4 md:p-8 space-y-6 w-full">
         {/* Mensajes de error y éxito */}
         {error && (
           <div className="bg-red-50 text-red-500 p-4 rounded-lg">
@@ -79,9 +80,9 @@ const WorkerPage = ({ className }) => {
           </div>
         )}
 
-        {/* Filtros */}
-        <div className="flex items-center gap-4">
-          <div className="relative flex-1 max-w-md">
+        {/* Filtros con responsive */}
+        <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
+          <div className="relative flex-1 w-full md:max-w-md">
             <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#6e6e6e]" />
             <input
               type="text"
@@ -94,7 +95,7 @@ const WorkerPage = ({ className }) => {
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
-            className="border border-[#e0e0e0] rounded-lg px-4 py-2 focus:outline-none focus:border-[#005bac]"
+            className="w-full md:w-auto border border-[#e0e0e0] rounded-lg px-4 py-2 focus:outline-none focus:border-[#005bac]"
           >
             <option value="all">Todos los estados</option>
             <option value="Pendiente">Pendiente</option>
@@ -103,105 +104,107 @@ const WorkerPage = ({ className }) => {
           </select>
         </div>
 
-        {/* Tabla de reparaciones */}
+        {/* Tabla con scroll horizontal para móviles */}
         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-[#f7f9fb] border-b border-[#e0e0e0]">
-              <tr>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">ID</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Vehículo</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Cliente</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Técnico</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Descripción</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Fecha de Entrada</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Estado</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Calificación</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {repairs.map((repair) => (
-                <tr key={repair.repair_id} className="border-b border-[#e0e0e0] last:border-b-0">
-                  <td className="px-6 py-4 text-sm">R-{repair.repair_id}</td>
-                  <td className="px-6 py-4">
-                    <div>
-                      <div className="text-sm font-medium">
-                        {repair.vehicle?.registration_number || 'N/A'}
-                      </div>
-                      <div className="text-xs text-[#6e6e6e]">
-                        {repair.vehicle ? `${repair.vehicle.brand} ${repair.vehicle.model}` : 'Vehículo no disponible'}
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div>
-                      <div className="text-sm font-medium">
-                        {repair.client?.name || 'N/A'}
-                      </div>
-                      <div className="text-xs text-[#6e6e6e]">
-                        {repair.client?.nif || 'NIF no disponible'}
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div>
-                      <div className="text-sm font-medium">
-                        {repair.worker?.name || 'N/A'}
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-sm">{repair.description}</td>
-                  <td className="px-6 py-4 text-sm">
-                    {new Date(repair.created_at).toLocaleDateString()}
-                  </td>
-                  <td className="px-6 py-4">
-                    <StatusBadge status={repair.status} />
-                  </td>
-                  <td className="px-6 py-4">
-                    {repair.status === 'Finalizado' ? (
-                      repair.rating ? (
-                        <div className="flex items-center gap-2">
-                          <StarRating rating={repair.rating} />
-
-                        </div>
-                      ) : (
-                        <span className="text-sm text-gray-400">Sin calificar</span>
-                      )
-                    ) : (
-                      <span className="text-sm text-gray-400">-</span>
-                    )}
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-2">
-                      <Link
-                        to={`/worker/repair/${repair.repair_id}/edit`}
-                        className="p-2 hover:bg-[#f7f9fb] rounded-full transition-colors"
-                      >
-                        <FiEdit2 className="w-4 h-4 text-[#6e6e6e]" />
-                      </Link>
-                      <button
-                        onClick={() => handleDeleteClick(repair.repair_id)}
-                        className="p-2 hover:bg-[#f7f9fb] rounded-full transition-colors"
-                      >
-                        <FiTrash2 className="w-4 h-4 text-[#e53935]" />
-                      </button>
-                    </div>
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[1000px]">
+              <thead className="bg-[#f7f9fb] border-b border-[#e0e0e0]">
+                <tr>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e] whitespace-nowrap">ID</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e] whitespace-nowrap">Vehículo</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e] whitespace-nowrap">Cliente</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e] whitespace-nowrap">Técnico</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Descripción</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e] whitespace-nowrap">Fecha</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e] whitespace-nowrap">Estado</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e] whitespace-nowrap">Calificación</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e] whitespace-nowrap">Acciones</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+              </thead>
+              <tbody>
+                {repairs.map((repair) => (
+                  <tr key={repair.repair_id} className="border-b border-[#e0e0e0] last:border-b-0 hover:bg-[#f7f9fb]">
+                    <td className="px-6 py-4 text-sm">R-{repair.repair_id}</td>
+                    <td className="px-6 py-4">
+                      <div>
+                        <div className="text-sm font-medium">
+                          {repair.vehicle?.registration_number || 'N/A'}
+                        </div>
+                        <div className="text-xs text-[#6e6e6e]">
+                          {repair.vehicle ? `${repair.vehicle.brand} ${repair.vehicle.model}` : 'Vehículo no disponible'}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div>
+                        <div className="text-sm font-medium">
+                          {repair.client?.name || 'N/A'}
+                        </div>
+                        <div className="text-xs text-[#6e6e6e]">
+                          {repair.client?.nif || 'NIF no disponible'}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div>
+                        <div className="text-sm font-medium">
+                          {repair.worker?.name || 'N/A'}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-sm">{repair.description}</td>
+                    <td className="px-6 py-4 text-sm">
+                      {new Date(repair.created_at).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4">
+                      <StatusBadge status={repair.status} />
+                    </td>
+                    <td className="px-6 py-4">
+                      {repair.status === 'Finalizado' ? (
+                        repair.rating ? (
+                          <div className="flex items-center gap-2">
+                            <StarRating rating={repair.rating} />
 
-      {/* Modal de confirmación para eliminar */}
-      <ConfirmModal
-        isOpen={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
-        onConfirm={handleConfirmDelete}
-        title="Eliminar reparación"
-        message={`¿Estás seguro de que quieres eliminar esta reparación? Esta acción no se puede deshacer.`}
-      />
+                          </div>
+                        ) : (
+                          <span className="text-sm text-gray-400">Sin calificar</span>
+                        )
+                      ) : (
+                        <span className="text-sm text-gray-400">-</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2">
+                        <Link
+                          to={`/worker/repair/${repair.repair_id}/edit`}
+                          className="p-2 hover:bg-[#f7f9fb] rounded-full transition-colors"
+                        >
+                          <FiEdit2 className="w-4 h-4 text-[#6e6e6e]" />
+                        </Link>
+                        <button
+                          onClick={() => handleDeleteClick(repair.repair_id)}
+                          className="p-2 hover:bg-[#f7f9fb] rounded-full transition-colors"
+                        >
+                          <FiTrash2 className="w-4 h-4 text-[#e53935]" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Modal de confirmación */}
+        <ConfirmModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={handleConfirmDelete}
+          title="Eliminar reparación"
+          message="¿Estás seguro de que quieres eliminar esta reparación? Esta acción no se puede deshacer."
+        />
+      </div>
     </div>
   );
 };

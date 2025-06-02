@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { toast } from 'sonner';
 import PasswordInput from '../components/forms/PasswordInput';
+import TransitionPage from '../components/TransitionPage';
 
-const CreateClientPage = ({ className }) => {
+const CreateClientPage = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -62,223 +63,226 @@ const CreateClientPage = ({ className }) => {
   };
 
   return (
-    <div
-      className={
-        "bg-[#f7f9fb] flex flex-row gap-0 items-start justify-start h-[800px] relative " +
-        className
-      }
-    >
-      <div className="flex flex-col gap-0 items-start justify-start self-stretch flex-1 relative">
-        <div className="border-solid border-[#e0e0e0] border-b pr-8 pl-8 flex flex-row items-center justify-between self-stretch shrink-0 h-16 relative">
-          <div className="text-[#2c2c2c] text-left font-['Inter-Bold',_sans-serif] text-lg leading-[21.6px] font-bold relative">
-            Registrar Nuevo Cliente{" "}
+    <TransitionPage>
+      <div className="min-h-screen bg-[#f7f9fb] p-4 md:p-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+            {/* Header */}
+            <div className="border-b border-[#e0e0e0] px-6 py-4">
+              <h1 className="text-lg md:text-xl font-bold text-[#2c2c2c]">
+                Registrar Nuevo Cliente
+              </h1>
+            </div>
+
+            {/* Formulario */}
+            <form onSubmit={handleSubmit} className="p-6 space-y-6">
+              {/* Grid responsive para campos */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Campos básicos */}
+                <div className="space-y-4">
+                  <div className="form-group">
+                    <label className="block text-sm font-medium text-[#2c2c2c] mb-2">
+                      Nombre *
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2 rounded-lg border border-[#e0e0e0] 
+                      focus:ring-2 focus:ring-[#005bac] focus:border-transparent
+                      transition-colors duration-200"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="block text-sm font-medium text-[#2c2c2c] mb-2">
+                      Email *
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2 rounded-lg border border-[#e0e0e0] 
+                      focus:ring-2 focus:ring-[#005bac] focus:border-transparent
+                      transition-colors duration-200"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="block text-sm font-medium text-[#2c2c2c] mb-2">
+                      Teléfono *
+                    </label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2 rounded-lg border border-[#e0e0e0] 
+                      focus:ring-2 focus:ring-[#005bac] focus:border-transparent
+                      transition-colors duration-200"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="block text-sm font-medium text-[#2c2c2c] mb-2">
+                      Dirección
+                    </label>
+                    <input
+                      type="text"
+                      name="address"
+                      value={formData.address}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2 rounded-lg border border-[#e0e0e0] 
+                      focus:ring-2 focus:ring-[#005bac] focus:border-transparent
+                      transition-colors duration-200"
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="form-group">
+                      <label className="block text-sm font-medium text-[#2c2c2c] mb-2">
+                        Código Postal
+                      </label>
+                      <input
+                        type="text"
+                        name="postal_code"
+                        value={formData.postal_code}
+                        onChange={handleChange}
+                        className="w-full px-4 py-2 rounded-lg border border-[#e0e0e0] 
+                        focus:ring-2 focus:ring-[#005bac] focus:border-transparent
+                        transition-colors duration-200"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="block text-sm font-medium text-[#2c2c2c] mb-2">
+                        DNI/NIF *
+                      </label>
+                      <input
+                        type="text"
+                        name="nif"
+                        value={formData.nif}
+                        onChange={handleChange}
+                        className="w-full px-4 py-2 rounded-lg border border-[#e0e0e0] 
+                        focus:ring-2 focus:ring-[#005bac] focus:border-transparent
+                        transition-colors duration-200"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="form-group">
+                      <label className="block text-sm font-medium text-[#2c2c2c] mb-2">
+                        Población *
+                      </label>
+                      <input
+                        type="text"
+                        name="city"
+                        value={formData.city}
+                        onChange={handleChange}
+                        className="w-full px-4 py-2 rounded-lg border border-[#e0e0e0] 
+                        focus:ring-2 focus:ring-[#005bac] focus:border-transparent
+                        transition-colors duration-200"
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="block text-sm font-medium text-[#2c2c2c] mb-2">
+                        Provincia
+                      </label>
+                      <input
+                        type="text"
+                        name="province"
+                        value={formData.province}
+                        onChange={handleChange}
+                        className="w-full px-4 py-2 rounded-lg border border-[#e0e0e0] 
+                        focus:ring-2 focus:ring-[#005bac] focus:border-transparent
+                        transition-colors duration-200"
+                      />
+                    </div>
+                  </div>
+                  <div className="form-group">
+                    <label className="block text-sm font-medium text-[#2c2c2c] mb-2">
+                      País *
+                    </label>
+                    <input
+                      type="text"
+                      name="country"
+                      value={formData.country}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2 rounded-lg border border-[#e0e0e0] 
+                      focus:ring-2 focus:ring-[#005bac] focus:border-transparent
+                      transition-colors duration-200"
+                      required
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="form-group">
+                      <label className="block text-sm font-medium text-[#2c2c2c] mb-2">
+                        Contraseña *
+                      </label>
+                      <div className="relative">
+                        <PasswordInput
+                          name="password"
+                          value={formData.password}
+                          onChange={handleChange}
+                          show={showPassword}
+                          onToggle={() => setShowPassword(!showPassword)}
+                          placeholder="Introduce la contraseña"
+                          className="w-full px-4 py-2 rounded-lg border border-[#e0e0e0] 
+                          focus:ring-2 focus:ring-[#005bac] focus:border-transparent
+                          transition-colors duration-200"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="form-group">
+                      <label className="block text-sm font-medium text-[#2c2c2c] mb-2">
+                        Confirmar Contraseña *
+                      </label>
+                      <div className="relative">
+                        <PasswordInput
+                          name="confirmPassword"
+                          value={formData.confirmPassword}
+                          onChange={handleChange}
+                          show={showConfirmPassword}
+                          onToggle={() => setShowConfirmPassword(!showConfirmPassword)}
+                          placeholder="Confirma la contraseña"
+                          className="w-full px-4 py-2 rounded-lg border border-[#e0e0e0] 
+                          focus:ring-2 focus:ring-[#005bac] focus:border-transparent
+                          transition-colors duration-200"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Botones con responsive */}
+              <div className="flex flex-col sm:flex-row justify-end gap-4 pt-6">
+                <button
+                  type="button"
+                  className="w-full sm:w-auto px-6 py-2 border border-[#e0e0e0] 
+                  rounded-lg text-[#6e6e6e] hover:bg-gray-50
+                  transition-colors duration-200"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="w-full sm:w-auto px-6 py-2 bg-[#005bac] text-white 
+                  rounded-lg hover:bg-[#004d91]
+                  transition-colors duration-200"
+                >
+                  Registrar Cliente
+                </button>
+              </div>
+            </form>
           </div>
         </div>
-        <div className="p-8 flex flex-col gap-6 items-start justify-start self-stretch flex-1 relative">
-          <form
-            onSubmit={handleSubmit}
-            className="bg-[#ffffff] rounded-xl p-8 flex flex-col gap-6 items-start justify-start self-stretch shrink-0 relative"
-            style={{ boxShadow: "0px 2px 12px 0px rgba(0, 0, 0, 0.06)" }}
-          >
-            <div className="flex flex-col gap-2 items-start justify-start self-stretch shrink-0 relative">
-              <div className="text-[#2c2c2c] text-left font-['Inter-SemiBold',_sans-serif] text-lg leading-[21.6px] font-semibold relative self-stretch">
-                Información del Cliente{" "}
-              </div>
-              <div className="text-[#6e6e6e] text-left font-['Inter-Regular',_sans-serif] text-sm leading-[16.8px] font-normal relative self-stretch">
-                Completa todos los campos para registrar un nuevo cliente{" "}
-              </div>
-            </div>
-            <div className="flex flex-col gap-5 items-start justify-start self-stretch shrink-0 relative">
-              <div className="flex flex-row gap-4 items-start justify-start self-stretch shrink-0 relative">
-                <div className="flex flex-col gap-2 items-start justify-start flex-1 relative">
-                  <div className="text-[#2c2c2c] text-left font-['Inter-Medium',_sans-serif] text-sm leading-[16.8px] font-medium relative self-stretch">
-                    Nombre *{" "}
-                  </div>
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative"
-                    placeholder="Introduce el nombre"
-                    required
-                  />
-                </div>
-
-              </div>
-              <div className="flex flex-col gap-2 items-start justify-start self-stretch shrink-0 relative">
-                <div className="text-[#2c2c2c] text-left font-['Inter-Medium',_sans-serif] text-sm leading-[16.8px] font-medium relative self-stretch">
-                  Email *{" "}
-                </div>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative"
-                  placeholder="ejemplo@correo.com"
-                  required
-                />
-              </div>
-              <div className="flex flex-col gap-2 items-start justify-start self-stretch shrink-0 relative">
-                <div className="text-[#2c2c2c] text-left font-['Inter-Medium',_sans-serif] text-sm leading-[16.8px] font-medium relative self-stretch">
-                  Teléfono *{" "}
-                </div>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative"
-                  placeholder="Introduce el teléfono"
-                  required
-                />
-              </div>
-              <div className="flex flex-col gap-2 items-start justify-start self-stretch shrink-0 relative">
-                <div className="text-[#2c2c2c] text-left font-['Inter-Medium',_sans-serif] text-sm leading-[16.8px] font-medium relative self-stretch">
-                  Dirección{" "}
-                </div>
-                <input
-                  type="text"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative"
-                  placeholder="Introduce la dirección completa"
-                />
-              </div>
-              <div className="flex flex-row gap-4 items-start justify-start self-stretch shrink-0 relative">
-                <div className="flex flex-col gap-2 items-start justify-start flex-1 relative">
-                  <div className="text-[#2c2c2c] text-left font-['Inter-Medium',_sans-serif] text-sm leading-[16.8px] font-medium relative self-stretch">
-                    Código Postal{" "}
-                  </div>
-                  <input
-                    type="text"
-                    name="postal_code"
-                    value={formData.postal_code}
-                    onChange={handleChange}
-                    className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative"
-                    placeholder="Introduce el código postal"
-                  />
-                </div>
-                <div className="flex flex-col gap-2 items-start justify-start flex-1 relative">
-                  <div className="text-[#2c2c2c] text-left font-['Inter-Medium',_sans-serif] text-sm leading-[16.8px] font-medium relative self-stretch">
-                    DNI/NIF *{" "}
-                  </div>
-                  <input
-                    type="text"
-                    name="nif"
-                    value={formData.nif}
-                    onChange={handleChange}
-                    className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative"
-                    placeholder="Introduce el DNI/NIF"
-                    required
-                  />
-                </div>
-              </div>
-              <div className="flex flex-row gap-4 items-start justify-start self-stretch shrink-0 relative">
-                <div className="flex flex-col gap-2 items-start justify-start flex-1 relative">
-                  <div className="text-[#2c2c2c] text-left font-['Inter-Medium',_sans-serif] text-sm leading-[16.8px] font-medium relative self-stretch">
-                    Población *{" "}
-                  </div>
-                  <input
-                    type="text"
-                    name="city"
-                    value={formData.city}
-                    onChange={handleChange}
-                    className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative"
-                    placeholder="Introduce la población"
-                    required
-                  />
-                </div>
-                <div className="flex flex-col gap-2 items-start justify-start flex-1 relative">
-                  <div className="text-[#2c2c2c] text-left font-['Inter-Medium',_sans-serif] text-sm leading-[16.8px] font-medium relative self-stretch">
-                    Provincia{" "}
-                  </div>
-                  <input
-                    type="text"
-                    name="province"
-                    value={formData.province}
-                    onChange={handleChange}
-                    className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative"
-                    placeholder="Introduce la provincia"
-                  />
-                </div>
-              </div>
-              <div className="flex flex-col gap-2 items-start justify-start self-stretch shrink-0 relative">
-                <div className="text-[#2c2c2c] text-left font-['Inter-Medium',_sans-serif] text-sm leading-[16.8px] font-medium relative self-stretch">
-                  País *{" "}
-                </div>
-                <input
-                  type="text"
-                  name="country"
-                  value={formData.country}
-                  onChange={handleChange}
-                  className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative"
-                  placeholder="Introduce el país"
-                  required
-                />
-              </div>
-              <div className="flex flex-row gap-4 items-start justify-start self-stretch shrink-0 relative">
-                <div className="flex flex-col gap-2 items-start justify-start flex-1 relative">
-                  <div className="text-[#2c2c2c] text-left font-['Inter-Medium',_sans-serif] text-sm leading-[16.8px] font-medium relative self-stretch">
-                    Contraseña *
-                  </div>
-                  <div className="relative w-full">
-                    <PasswordInput
-                      name="password"
-                      value={formData.password}
-                      onChange={handleChange}
-                      show={showPassword}
-                      onToggle={() => setShowPassword(!showPassword)}
-                      placeholder="Introduce la contraseña"
-                      className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative w-full"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-2 items-start justify-start flex-1 relative">
-                  <div className="text-[#2c2c2c] text-left font-['Inter-Medium',_sans-serif] text-sm leading-[16.8px] font-medium relative self-stretch">
-                    Confirmar Contraseña * 
-                  </div>
-                  <div className="relative w-full">
-                    <PasswordInput
-                      name="confirmPassword"
-                      value={formData.confirmPassword}
-                      onChange={handleChange}
-                      show={showConfirmPassword}
-                      onToggle={() => setShowConfirmPassword(!showConfirmPassword)}
-                      placeholder="Confirma la contraseña"
-                      className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative w-full"
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-row gap-4 items-center justify-end self-stretch shrink-0 relative">
-              <button
-                type="button"
-                className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-4 pl-4 flex flex-row gap-0 items-center justify-center shrink-0 w-[120px] h-12 relative"
-              >
-                <div className="text-[#6e6e6e] text-left font-['Inter-SemiBold',_sans-serif] text-sm leading-[16.8px] font-semibold relative">
-                  Cancelar{" "}
-                </div>
-              </button>
-              <button
-                type="submit"
-                className="bg-[#005bac] rounded-lg pr-4 pl-4 flex flex-row gap-0 items-center justify-center shrink-0 w-[180px] h-12 relative"
-              >
-                <div className="text-[#ffffff] text-left font-['Inter-SemiBold',_sans-serif] text-sm leading-[16.8px] font-semibold relative">
-                  Registrar Cliente{" "}
-                </div>
-              </button>
-            </div>
-          </form>
-        </div>
       </div>
-    </div>
+    </TransitionPage>
   );
 };
 

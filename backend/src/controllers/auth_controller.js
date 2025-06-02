@@ -18,7 +18,7 @@ const register = async (req, res) => {
       name: userData.name,
       email: userData.email,
       password: hashedPassword,
-      role: userData.role, // Incluimos el rol del usuario
+      role: userData.role, 
     });
     let roleResult;
     if (userData.role === 'client') {
@@ -31,16 +31,16 @@ const register = async (req, res) => {
         country: userData.country,
         nif: userData.nif,
         phone: userData.phone,
-      }, userData); // Pasamos userData
+      }, userData); 
     } else if (userData.role === 'worker') {
       roleResult = await workerModel.createWorker({
         user_id: createdUser.user_id,
-        role: userData.worker_role, // Usamos el nombre correcto del campo
-      }, userData); // Pasamos userData
+        role: userData.worker_role, 
+      }, userData); 
     } else if (userData.role === 'admin') {
-      roleResult = await adminModel.createAdmin({  // Actualizado para que coincida con el modelo
+      roleResult = await adminModel.createAdmin({ 
         user_id: createdUser.user_id,
-      }, userData); // Pasamos userData
+      }, userData); 
     }
 
     res.status(201).json({
@@ -48,7 +48,7 @@ const register = async (req, res) => {
       roleResult,
     });
   } catch (error) {
-    res.status(500).json({ error: 'Error al crear el usuario', details: error.message }); //Incluimos el mensaje de error
+    res.status(500).json({ error: 'Error al crear el usuario', details: error.message }); 
   }
 };
 
@@ -56,48 +56,45 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await userModel.getUserByEmail(email);
+    
     if (!user) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: 'Contraseña incorrecta' });
     }
-    // 3. Obtener el tipo de usuario (cliente, trabajador, administrador) 
-    const payload = {
-      userId: user.user_id,
-      role:user.role
-    };
 
-    const options = {
-      expiresIn: '24h',
-    };
-    const token = jwt.sign(payload, JWT_SECRET, options);
-    // Enviar el JWT como una cookie
+    const token = jwt.sign(
+      { userId: user.user_id, role: user.role },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
     res.cookie('auth_token', token, {
-      maxAge: 24 * 60 * 60 * 1000, // 24 horas en milisegundos
-      httpOnly: true, // Solo accesible por el servidor
-      secure: process.env.NODE_ENV === 'production', // Solo se envía por HTTPS en producción
-      sameSite: 'Strict', // Protección contra ataques CSRF
-      path: '/',
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'Lax',
+      maxAge: 24 * 60 * 60 * 1000, 
+      path: '/'
     });
-    
-    return res.status(200).json({ message: 'Inicio de sesión exitoso',
+
+    return res.json({
+      message: 'Login exitoso',
       user: {
-        user_id: user.user_id,
+        userId: user.user_id,
+        role: user.role,
         name: user.name,
-        email: user.email,
-        role: user.role  
+        email: user.email
       }
     });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: 'Error en el servidor', details: error.message });
+    res.status(500).json({ message: 'Error en el servidor' });
   }
 };
 
 const logout = (req, res) => {
-  // Limpiar la cookie de autenticación
   res.clearCookie('auth_token', {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
@@ -105,7 +102,6 @@ const logout = (req, res) => {
     path: '/',
   });
 
-  // Enviar una respuesta de éxito
   res.status(200).json({ message: 'Cierre de sesión exitoso' });
 };
 
