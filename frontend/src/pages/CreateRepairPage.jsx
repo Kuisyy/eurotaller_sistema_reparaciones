@@ -60,12 +60,13 @@ const CreateRepairPage = () => {
         body: JSON.stringify(repairData)
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al crear la reparación');
+        throw new Error(data.message || 'Error al crear la reparación');
       }
 
-      
+      // Limpiar formulario
       setSelectedClient('');
       setSelectedVehicle('');
       setSelectedWorker('');
@@ -73,10 +74,13 @@ const CreateRepairPage = () => {
       setNotes('');
       setStatus('Pendiente');
       
+      // Mostrar mensaje de éxito
       toast.success('Reparación creada correctamente');
+      setSubmitSuccess(true);
 
     } catch (err) {
-      toast.error("Error: " + err.message);
+      setSubmitError(err.message);
+      toast.error(err.message || "Error al crear la reparación");
     } finally {
       setSubmitLoading(false);
     }
@@ -90,10 +94,6 @@ const CreateRepairPage = () => {
     );
   }
 
-  if (error) {
-    toast.error(error);
-  }
-
   return (
     <div className="bg-white rounded-xl p-8 shadow-md">
       <div className="mb-6">
@@ -105,17 +105,7 @@ const CreateRepairPage = () => {
         </p>
       </div>
 
-      {submitSuccess && (
-        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6">
-          Reparación creada con éxito ✅
-        </div>
-      )}
 
-      {submitError && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6">
-          Error: {submitError}
-        </div>
-      )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

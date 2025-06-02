@@ -16,7 +16,6 @@ import VehiclesPage from '../pages/VehiclesPage.jsx';
 import CreateUserPage from '../pages/CreateUserPage.jsx';
 import EditUserPage from '../pages/EditUserPage.jsx';
 import EditVehiclePage from '../pages/EditVehiclePage.jsx';
-import TransitionPage from '../components/TransitionPage';
 import PageTransition from '../components/PageTransition';
 
 export const router = createBrowserRouter([
@@ -40,9 +39,9 @@ export const router = createBrowserRouter([
         path: 'client',
         element: (
           <ProtectedRoute allowedRoles={['client']}>
-            <TransitionPage>
+            <PageTransition>
               <ClientPage />
-            </TransitionPage>
+            </PageTransition>
           </ProtectedRoute>
         ),
       },

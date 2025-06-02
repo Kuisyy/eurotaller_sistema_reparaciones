@@ -16,6 +16,9 @@ import repairRoutes from './src/routes/repair_routes.js';
 import authRoutes from './src/routes/auth_routes.js';
 import userRoutes from './src/routes/user_routes.js';
 import ratingRoutes from './src/routes/rating_routes.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;

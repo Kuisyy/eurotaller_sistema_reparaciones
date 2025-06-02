@@ -1,5 +1,8 @@
 import repairModel from '../models/repair_model.js';
 import workerModel from '../models/worker_model.js';
+import clientModel from '../models/client_model.js';
+import userModel from '../models/user_model.js';
+import transporter from '../config/email_config.js';
 
 const getAllRepairs = async (req, res) => {
   try {
@@ -43,7 +46,6 @@ const createRepair = async (req, res) => {
       worker_id: workerId, 
     };
 
-    // 3. Creamos la reparación
     const newRepair = await repairModel.createRepair(newRepairData);
     res.status(201).json(newRepair);
 
@@ -55,15 +57,72 @@ const createRepair = async (req, res) => {
 const updateRepair = async (req, res) => {
   const { id } = req.params;
   const repairData = req.body;
+  
   try {
-    const updatedRepair = await repairModel.updateRepair(id, repairData);
-    if (updatedRepair) {
-      res.status(200).json(updatedRepair);
-    } else {
-      res.status(404).json({ message: 'Reparación no encontrada' });
+    const currentRepair = await repairModel.getRepairById(id);
+    if (!currentRepair) {
+      return res.status(404).json({ message: 'Reparación no encontrada' });
     }
+
+    const updatedRepair = await repairModel.updateRepair(id, repairData);
+    if (!updatedRepair) {
+      return res.status(404).json({ message: 'Error al actualizar la reparación' });
+    }
+
+    if (repairData.status === 'Finalizado' && currentRepair.status !== 'Finalizado') {
+      const client = await clientModel.getClientById(updatedRepair.client_id);
+      if (!client) {
+        console.error('Cliente no encontrado para la reparación:', id);
+        return res.status(200).json(updatedRepair);
+      }
+
+      const user = await userModel.getUserById(client.user_id);
+      if (!user || !user.email) {
+        console.error('Usuario/email no encontrado para el cliente:', client.client_id);
+        return res.status(200).json(updatedRepair);
+      }
+
+      // Enviar email
+      const mailOptions = {
+        from: 'eurotallerjoseluis@gmail.com',
+        to: user.email,
+        subject: 'Reparación Finalizada - EuroTaller',
+        html: `
+          <div style="font-family: Arial, sans-serif; padding: 20px;">
+            <h2 style="color: #005bac;">¡Hola ${user.name}!</h2>
+            <p>Nos complace informarte que tu reparación (ID: R-${String(updatedRepair.repair_id).padStart(3, '0')}) ha sido finalizada.</p>
+            <p>Puedes pasar a recoger tu vehículo en nuestro taller.</p>
+            <p>Detalles de la reparación:</p>
+            <ul>
+              <li>Descripción: ${updatedRepair.description}</li>
+              <li>Fecha de finalización: ${new Date().toLocaleDateString()}</li>
+            </ul>
+            <p>¡Gracias por confiar en EuroTaller!</p>
+            <hr>
+            <p style="color: #666; font-size: 12px;">
+              Este es un mensaje automático. Por favor, no responda a este correo. 
+              Si tiene alguna consulta, contacte directamente con el taller.
+            </p>
+          </div>
+        `
+      };
+
+      try {
+        await transporter.sendMail(mailOptions);
+        console.log('Email enviado al cliente:', user.email);
+      } catch (emailError) {
+        console.error('Error al enviar email:', emailError);
+        // No devolvemos error al cliente si falla el email
+      }
+    }
+
+    res.status(200).json(updatedRepair);
   } catch (error) {
-    res.status(500).json({ error: 'Error al actualizar la reparación' });
+    console.error('Error en updateRepair:', error);
+    res.status(500).json({ 
+      error: 'Error al actualizar la reparación',
+      details: error.message 
+    });
   }
 };
 
