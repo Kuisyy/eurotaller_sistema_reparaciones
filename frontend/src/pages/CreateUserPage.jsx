@@ -193,31 +193,11 @@ const CreateUserPage = () => {
     </>
   );
 
-  const renderWorkerFields = () => (
-    <div className="flex flex-col gap-2">
-      <label className="text-sm font-medium text-[#2c2c2c]">
-        Rol del trabajador *
-      </label>
-      <select
-        name="worker_role"
-        value={formData.worker_role}
-        onChange={handleInputChange}
-        className="h-12 px-4 rounded-lg border border-[#e0e0e0] focus:outline-none focus:border-[#005bac]"
-        required
-      >
-        <option value="">Selecciona un rol</option>
-        <option value="mecanico">Mecánico</option>
-        <option value="administrativo">Administrativo</option>
-        <option value="electricista">Electricista</option>
-      </select>
-    </div>
-  );
-
   return (
-    <div className="bg-[#ffffff] rounded-xl p-8 flex flex-col gap-8 items-start justify-start self-stretch relative shadow-sm">
+    <div className="bg-[#ffffff] rounded-xl p-4 sm:p-8 flex flex-col gap-6 sm:gap-8 items-start justify-start self-stretch relative shadow-sm">
       {/* Header */}
       <div className="flex flex-col gap-2 items-start justify-start self-stretch">
-        <h1 className="text-[#2c2c2c] text-lg font-semibold">
+        <h1 className="text-[#2c2c2c] text-lg sm:text-xl font-semibold">
           Crear Nuevo Usuario
         </h1>
         <p className="text-[#6e6e6e] text-sm">
@@ -226,11 +206,11 @@ const CreateUserPage = () => {
       </div>
 
       {/* Role Selection - Always visible */}
-      <div className="flex flex-col gap-5 w-full">
+      <div className="flex flex-col gap-4 sm:gap-5 w-full">
         <h2 className="text-[#2c2c2c] text-base font-semibold">
           Tipo de Usuario
         </h2>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
             { 
               id: 'admin', 
@@ -254,7 +234,7 @@ const CreateUserPage = () => {
             <button
               key={role.id}
               onClick={() => handleRoleSelect(role.id)}
-              className={`flex items-center gap-3 p-4 rounded-lg border transition-all
+              className={`flex items-center gap-3 p-4 rounded-lg border transition-all w-full
                 ${selectedRole === role.id 
                   ? `${role.color} text-white border-transparent` 
                   : 'border-[#e0e0e0] hover:border-[#005bac] hover:bg-[#f7f9fb]'
@@ -269,11 +249,11 @@ const CreateUserPage = () => {
         </div>
       </div>
 
-      {/* Form - Shows when role is selected */}
+      {/* Form */}
       {selectedRole && (
         <form onSubmit={handleSubmit} className="flex flex-col gap-6 w-full">
           {/* Common Fields */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex flex-col gap-2">
               <label className="text-sm font-medium text-[#2c2c2c]">
                 Nombre *
@@ -304,7 +284,7 @@ const CreateUserPage = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex flex-col gap-2">
               <label className="text-sm font-medium text-[#2c2c2c]">
                 Contraseña *
@@ -352,21 +332,135 @@ const CreateUserPage = () => {
           </div>
 
           {/* Role Specific Fields */}
-          {selectedRole === 'client' && renderClientFields()}
-          {selectedRole === 'worker' && renderWorkerFields()}
+          {selectedRole === 'client' && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-medium text-[#2c2c2c]">
+                  Teléfono *
+                </label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  className="h-12 px-4 rounded-lg border border-[#e0e0e0] focus:outline-none focus:border-[#005bac]"
+                  placeholder="Introduce el teléfono"
+                  required
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-medium text-[#2c2c2c]">
+                  DNI/NIF *
+                </label>
+                <input
+                  type="text"
+                  name="nif"
+                  value={formData.nif}
+                  onChange={handleInputChange}
+                  className="h-12 px-4 rounded-lg border border-[#e0e0e0] focus:outline-none focus:border-[#005bac]"
+                  placeholder="Introduce el DNI/NIF"
+                  required
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <label className="text-sm font-medium text-[#2c2c2c]">
+                  Dirección
+                </label>
+                <input
+                  type="text"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleInputChange}
+                  className="w-full h-12 px-4 rounded-lg border border-[#e0e0e0] focus:outline-none focus:border-[#005bac]"
+                  placeholder="Introduce la dirección"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-medium text-[#2c2c2c]">
+                  Código Postal
+                </label>
+                <input
+                  type="text"
+                  name="postal_code"
+                  value={formData.postal_code}
+                  onChange={handleInputChange}
+                  className="h-12 px-4 rounded-lg border border-[#e0e0e0] focus:outline-none focus:border-[#005bac]"
+                  placeholder="Introduce el código postal"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-medium text-[#2c2c2c]">
+                  Ciudad
+                </label>
+                <input
+                  type="text"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleInputChange}
+                  className="h-12 px-4 rounded-lg border border-[#e0e0e0] focus:outline-none focus:border-[#005bac]"
+                  placeholder="Introduce la ciudad"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-medium text-[#2c2c2c]">
+                  Provincia
+                </label>
+                <input
+                  type="text"
+                  name="province"
+                  value={formData.province}
+                  onChange={handleInputChange}
+                  className="h-12 px-4 rounded-lg border border-[#e0e0e0] focus:outline-none focus:border-[#005bac]"
+                  placeholder="Introduce la provincia"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-medium text-[#2c2c2c]">
+                  País
+                </label>
+                <input
+                  type="text"
+                  name="country"
+                  value={formData.country}
+                  onChange={handleInputChange}
+                  className="h-12 px-4 rounded-lg border border-[#e0e0e0] focus:outline-none focus:border-[#005bac]"
+                  placeholder="Introduce el país"
+                />
+              </div>
+            </div>
+          )}
+          {selectedRole === 'worker' && (
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-medium text-[#2c2c2c]">
+                Rol del trabajador *
+              </label>
+              <select
+                name="worker_role"
+                value={formData.worker_role}
+                onChange={handleInputChange}
+                className="h-12 px-4 rounded-lg border border-[#e0e0e0] focus:outline-none focus:border-[#005bac]"
+                required
+              >
+                <option value="">Selecciona un rol</option>
+                <option value="mecanico">Mecánico</option>
+                <option value="administrativo">Administrativo</option>
+                <option value="electricista">Electricista</option>
+              </select>
+            </div>
+          )}
 
           {/* Form Actions */}
-          <div className="flex justify-end gap-4 pt-4 border-t border-[#e0e0e0]">
+          <div className="flex flex-col sm:flex-row justify-end gap-4 pt-6 border-t border-[#e0e0e0]">
             <button
               type="button"
               onClick={() => navigate('/admin/users')}
-              className="px-6 h-12 rounded-lg border border-[#e0e0e0] text-[#6e6e6e] font-semibold"
+              className="w-full sm:w-auto px-6 h-12 rounded-lg border border-[#e0e0e0] text-[#6e6e6e] font-semibold"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="px-8 h-12 rounded-lg bg-[#005bac] text-white font-semibold hover:bg-[#004d91]"
+              className="w-full sm:w-auto px-8 h-12 rounded-lg bg-[#005bac] text-white font-semibold hover:bg-[#004d91]"
             >
               Crear Usuario
             </button>

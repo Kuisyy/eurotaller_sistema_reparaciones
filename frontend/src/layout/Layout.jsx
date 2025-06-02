@@ -1,11 +1,14 @@
 import React from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
+import { AnimatePresence } from 'framer-motion'
 
 const Layout = () => {
+  const location = useLocation();
+
   return (
-    <>
-        <Outlet />
-    </>
+    <AnimatePresence mode="wait">
+      <Outlet key={location.pathname} />
+    </AnimatePresence>
   )
 }
 

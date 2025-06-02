@@ -16,6 +16,8 @@ import VehiclesPage from '../pages/VehiclesPage.jsx';
 import CreateUserPage from '../pages/CreateUserPage.jsx';
 import EditUserPage from '../pages/EditUserPage.jsx';
 import EditVehiclePage from '../pages/EditVehiclePage.jsx';
+import TransitionPage from '../components/TransitionPage';
+import PageTransition from '../components/PageTransition';
 
 export const router = createBrowserRouter([
   {
@@ -28,13 +30,19 @@ export const router = createBrowserRouter([
       },
       {
         path: 'login',
-        element: <LoginPage />,
+        element: (
+          <PageTransition>
+            <LoginPage />
+          </PageTransition>
+        ),
       },
       {
         path: 'client',
         element: (
           <ProtectedRoute allowedRoles={['client']}>
-            <ClientPage />
+            <TransitionPage>
+              <ClientPage />
+            </TransitionPage>
           </ProtectedRoute>
         ),
       },
@@ -124,7 +132,9 @@ export const router = createBrowserRouter([
             path: 'users',
             element: (
               <AdminLayout title="Usuarios">
-                <UsersPage />
+                <PageTransition>
+                  <UsersPage />
+                </PageTransition>
               </AdminLayout>
             ),
           },
@@ -132,7 +142,9 @@ export const router = createBrowserRouter([
             path: 'create-user',
             element: (
               <AdminLayout title="Crear Usuario">
-                <CreateUserPage />
+                <PageTransition>
+                  <CreateUserPage />
+                </PageTransition>
               </AdminLayout>
             ),
           },
@@ -140,7 +152,19 @@ export const router = createBrowserRouter([
             path: 'repairs',
             element: (
               <AdminLayout title="Reparaciones">
-                <WorkerPage />
+                <PageTransition>
+                  <WorkerPage />
+                </PageTransition>
+              </AdminLayout>
+            ),
+          },
+          {
+            path: 'create-repair',
+            element: (
+              <AdminLayout title="Crear Reparación">
+                <PageTransition>
+                  <CreateRepairPage />
+                </PageTransition>
               </AdminLayout>
             ),
           },
@@ -148,7 +172,9 @@ export const router = createBrowserRouter([
             path: 'vehicles',
             element: (
               <AdminLayout title="Vehículos">
-                <VehiclesPage />
+                <PageTransition>
+                  <VehiclesPage />
+                </PageTransition>
               </AdminLayout>
             ),
           },
@@ -156,7 +182,9 @@ export const router = createBrowserRouter([
             path: 'create-vehicle',
             element: (
               <AdminLayout title="Crear Vehículo">
-                <CreateVehiclePage />
+                <PageTransition>
+                  <CreateVehiclePage />
+                </PageTransition>
               </AdminLayout>
             ),
           },
@@ -164,7 +192,9 @@ export const router = createBrowserRouter([
             path: 'user/:userId/edit',
             element: (
               <AdminLayout title="Editar Usuario">
-                <EditUserPage />
+                <PageTransition>
+                  <EditUserPage />
+                </PageTransition>
               </AdminLayout>
             ),
           },
@@ -172,7 +202,9 @@ export const router = createBrowserRouter([
             path: 'vehicles/:vehicleId/edit',
             element: (
               <AdminLayout title="Editar Vehículo">
-                <EditVehiclePage />
+                <PageTransition>
+                  <EditVehiclePage />
+                </PageTransition>
               </AdminLayout>
             ),
           }

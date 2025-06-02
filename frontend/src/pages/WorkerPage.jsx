@@ -107,74 +107,61 @@ const WorkerPage = ({ className }) => {
         {/* Tabla con scroll horizontal para móviles */}
         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[1000px]">
+            <table className="w-full min-w-[800px]"> {/* Cambiado de 1000px a 800px para consistencia */}
               <thead className="bg-[#f7f9fb] border-b border-[#e0e0e0]">
                 <tr>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e] whitespace-nowrap">ID</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e] whitespace-nowrap">Vehículo</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e] whitespace-nowrap">Cliente</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e] whitespace-nowrap">Técnico</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Descripción</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e] whitespace-nowrap">Fecha</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e] whitespace-nowrap">Estado</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e] whitespace-nowrap">Calificación</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e] whitespace-nowrap">Acciones</th>
+                  <th className="w-24 px-4 sm:px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">ID</th>
+                  <th className="flex-[2] px-4 sm:px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Vehículo</th>
+                  <th className="flex-[2] px-4 sm:px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Cliente</th>
+                  <th className="flex-1 px-4 sm:px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Técnico</th>
+                  <th className="hidden sm:table-cell flex-1 px-4 sm:px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Descripción</th>
+                  <th className="w-32 px-4 sm:px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Estado</th>
+                  <th className="w-28 px-4 sm:px-6 py-4 text-center text-sm font-semibold text-[#6e6e6e]">Acciones</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-[#e0e0e0]">
                 {repairs.map((repair) => (
-                  <tr key={repair.repair_id} className="border-b border-[#e0e0e0] last:border-b-0 hover:bg-[#f7f9fb]">
-                    <td className="px-6 py-4 text-sm">R-{repair.repair_id}</td>
-                    <td className="px-6 py-4">
-                      <div>
-                        <div className="text-sm font-medium">
+                  <tr key={repair.repair_id} className="hover:bg-[#f7f9fb]">
+                    <td className="w-24 px-4 sm:px-6 py-4">
+                      <span className="text-sm font-medium whitespace-nowrap">
+                        R-{String(repair.repair_id).padStart(3, '0')}
+                      </span>
+                    </td>
+                    <td className="flex-[2] px-4 sm:px-6 py-4">
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium truncate">
                           {repair.vehicle?.registration_number || 'N/A'}
-                        </div>
-                        <div className="text-xs text-[#6e6e6e]">
-                          {repair.vehicle ? `${repair.vehicle.brand} ${repair.vehicle.model}` : 'Vehículo no disponible'}
-                        </div>
+                        </span>
+                        <span className="text-xs text-[#6e6e6e] truncate">
+                          {repair.vehicle ? `${repair.vehicle.brand} ${repair.vehicle.model}` : 'No disponible'}
+                        </span>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <div>
-                        <div className="text-sm font-medium">
+                    <td className="flex-[2] px-4 sm:px-6 py-4">
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium truncate">
                           {repair.client?.name || 'N/A'}
-                        </div>
-                        <div className="text-xs text-[#6e6e6e]">
-                          {repair.client?.nif || 'NIF no disponible'}
-                        </div>
+                        </span>
+                        <span className="text-xs text-[#6e6e6e] truncate">
+                          {repair.client?.nif || 'Sin NIF'}
+                        </span>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <div>
-                        <div className="text-sm font-medium">
-                          {repair.worker?.name || 'N/A'}
-                        </div>
-                      </div>
+                    <td className="flex-1 px-4 sm:px-6 py-4">
+                      <span className="text-sm truncate">
+                        {repair.worker?.name || 'N/A'}
+                      </span>
                     </td>
-                    <td className="px-6 py-4 text-sm">{repair.description}</td>
-                    <td className="px-6 py-4 text-sm">
-                      {new Date(repair.created_at).toLocaleDateString()}
+                    <td className="hidden sm:table-cell flex-1 px-4 sm:px-6 py-4">
+                      <span className="text-sm truncate">
+                        {repair.description}
+                      </span>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="w-32 px-4 sm:px-6 py-4">
                       <StatusBadge status={repair.status} />
                     </td>
-                    <td className="px-6 py-4">
-                      {repair.status === 'Finalizado' ? (
-                        repair.rating ? (
-                          <div className="flex items-center gap-2">
-                            <StarRating rating={repair.rating} />
-
-                          </div>
-                        ) : (
-                          <span className="text-sm text-gray-400">Sin calificar</span>
-                        )
-                      ) : (
-                        <span className="text-sm text-gray-400">-</span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
+                    <td className="w-28 px-4 sm:px-6 py-4">
+                      <div className="flex items-center justify-center gap-2">
                         <Link
                           to={`/worker/repair/${repair.repair_id}/edit`}
                           className="p-2 hover:bg-[#f7f9fb] rounded-full transition-colors"

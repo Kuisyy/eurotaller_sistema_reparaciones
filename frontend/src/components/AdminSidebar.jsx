@@ -25,79 +25,83 @@ export const AdminSidebar = () => {
   };
 
   return (
-    <div className="bg-[#ffffff] border-solid border-[#e0e0e0] border-r flex flex-col justify-between w-60 h-screen">
+    <div className="bg-[#ffffff] border-solid border-[#e0e0e0] border-r flex flex-col h-full w-64 overflow-y-auto">
       <div>
-        <div className="bg-[#005bac] pr-4 pl-4 flex flex-row gap-3 items-center h-16">
+        <div className="bg-[#005bac] px-4 flex items-center h-16">
           <img className="w-7 h-7" src={tallerLogo} alt="Logo" />
-          <div className="text-[#ffffff] text-base font-bold">
+          <div className="text-[#ffffff] text-base font-bold ml-3">
             EuroTaller Admin
           </div>
         </div>
 
-        <div className="p-4 flex flex-col gap-1">
+        <nav className="p-4 flex flex-col gap-1">
+          {/* Sección Usuarios */}
           <div className="text-[#6e6e6e] text-xs font-semibold mb-2">
             USUARIOS
           </div>
           <Link
             to="/admin/users"
-            className={`rounded px-3 flex items-center h-10 gap-3 ${isActive('/admin/users')}`}
+            className={`rounded px-3 py-2 flex items-center gap-3 ${isActive('/admin/users')}`}
           >
-            <FiUsers className="w-4 h-4" />
-            <span className="text-sm">Gestionar Usuarios</span>
+            <FiUsers className="w-4 h-4 shrink-0" />
+            <span className="text-sm truncate">Gestionar Usuarios</span>
           </Link>
           <Link
             to="/admin/create-user"
-            className={`rounded px-3 flex items-center h-10 gap-3 ${isActive('/admin/create-user')}`}
+            className={`rounded px-3 py-2 flex items-center gap-3 ${isActive('/admin/create-user')}`}
           >
-            <FiUserPlus className="w-4 h-4" />
-            <span className="text-sm">Crear Usuario</span>
+            <FiUserPlus className="w-4 h-4 shrink-0" />
+            <span className="text-sm truncate">Crear Usuario</span>
           </Link>
 
+          {/* Sección Reparaciones */}
           <div className="text-[#6e6e6e] text-xs font-semibold mt-4 mb-2">
             REPARACIONES
           </div>
           <Link
             to="/admin/repairs"
-            className={`rounded px-3 flex items-center h-10 gap-3 ${isActive('/admin/repairs')}`}
+            className={`rounded px-3 py-2 flex items-center gap-3 ${isActive('/admin/repairs')}`}
           >
-            <FiTool className="w-4 h-4" />
-            <span className="text-sm">Ver Reparaciones</span>
+            <FiTool className="w-4 h-4 shrink-0" />
+            <span className="text-sm truncate">Ver Reparaciones</span>
           </Link>
           <Link
-            to="/worker/create-repair"
-            className={`rounded px-3 flex items-center h-10 gap-3 ${isActive('/admin/create-repair')}`}
+            to="/admin/create-repair"
+            className={`rounded px-3 py-2 flex items-center gap-3 ${isActive('/admin/create-repair')}`}
           >
-            <FiPlusCircle className="w-4 h-4" />
-            <span className="text-sm">Crear Reparación</span>
+            <FiPlusCircle className="w-4 h-4 shrink-0" />
+            <span className="text-sm truncate">Crear Reparación</span>
           </Link>
 
+          {/* Sección Vehículos */}
           <div className="text-[#6e6e6e] text-xs font-semibold mt-4 mb-2">
             VEHÍCULOS
           </div>
           <Link
             to="/admin/vehicles"
-            className={`rounded px-3 flex items-center h-10 gap-3 ${isActive('/admin/vehicles')}`}
+            className={`rounded px-3 py-2 flex items-center gap-3 ${isActive('/admin/vehicles')}`}
           >
-            <FiTruck className="w-4 h-4" />
-            <span className="text-sm">Ver Vehículos</span>
+            <FiTruck className="w-4 h-4 shrink-0" />
+            <span className="text-sm truncate">Ver Vehículos</span>
           </Link>
           <Link
-            to="/worker/create-vehicle"
-            className={`rounded px-3 flex items-center h-10 gap-3 ${isActive('/admin/create-vehicle')}`}
+            to="/admin/create-vehicle"
+            className={`rounded px-3 py-2 flex items-center gap-3 ${isActive('/admin/create-vehicle')}`}
           >
-            <FiPlusCircle className="w-4 h-4" />
-            <span className="text-sm">Crear Vehículo</span>
+            <FiPlusCircle className="w-4 h-4 shrink-0" />
+            <span className="text-sm truncate">Crear Vehículo</span>
           </Link>
-        </div>
+        </nav>
       </div>
 
-      <div className="p-4 border-t border-[#e0e0e0] space-y-4">
+      <div className="mt-auto p-4 border-t border-[#e0e0e0]">
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-3 text-[#6e6e6e] hover:text-[#005bac] transition-colors duration-300 px-3 py-2 rounded"
+          className="w-full flex items-center gap-3 text-[#6e6e6e] hover:text-[#005bac] 
+          transition-colors duration-300 px-3 py-2 rounded"
         >
-          <FiLogOut className="w-4 h-4" />
-          <span className="text-sm">Cerrar sesión</span>
+          <FiLogOut className="w-4 h-4 shrink-0" />
+          <span className="text-sm truncate">Cerrar sesión</span>
         </button>
       </div>
     </div>

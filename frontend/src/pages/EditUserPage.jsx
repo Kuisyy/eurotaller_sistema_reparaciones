@@ -33,7 +33,7 @@ const EditUserPage = () => {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div className="bg-white rounded-xl p-8 shadow-md">
+    <div className="bg-white rounded-xl p-4 sm:p-8 shadow-md">
       <div className="mb-6">
         <h2 className="text-lg font-semibold text-[#2c2c2c] mb-2">
           Editar Usuario
@@ -50,8 +50,8 @@ const EditUserPage = () => {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-2 gap-6">
-          {/* Campos comunes - solo email obligatorio si quieres mantener uno */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+          {/* Campos comunes */}
           <div>
             <label className="block text-sm font-medium text-[#2c2c2c] mb-2">
               Nombre
@@ -103,98 +103,100 @@ const EditUserPage = () => {
             </div>
           </div>
 
-          {/* Campos específicos de cliente - quitar required */}
+          {/* Campos específicos de cliente */}
           {formData.role === 'client' && (
             <>
-              <div>
-                <label className="block text-sm font-medium text-[#2c2c2c] mb-2">
-                  DNI/NIF
-                </label>
-                <input
-                  type="text"
-                  name="nif"
-                  value={formData.nif}
-                  onChange={handleInputChange}
-                  className="w-full border border-[#e0e0e0] rounded-lg px-4 py-3"
-                  placeholder="Dejar vacío para no cambiar"
-                />
-              </div>
+              <div className="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-[#2c2c2c] mb-2">
+                    DNI/NIF
+                  </label>
+                  <input
+                    type="text"
+                    name="nif"
+                    value={formData.nif}
+                    onChange={handleInputChange}
+                    className="w-full border border-[#e0e0e0] rounded-lg px-4 py-3"
+                    placeholder="Dejar vacío para no cambiar"
+                  />
+                </div>
 
-              <div>
-                <label className="block text-sm font-medium text-[#2c2c2c] mb-2">
-                  Teléfono
-                </label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  className="w-full border border-[#e0e0e0] rounded-lg px-4 py-3"
-                  placeholder="Dejar vacío para no cambiar"
-                />
-              </div>
+                <div>
+                  <label className="block text-sm font-medium text-[#2c2c2c] mb-2">
+                    Teléfono
+                  </label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    className="w-full border border-[#e0e0e0] rounded-lg px-4 py-3"
+                    placeholder="Dejar vacío para no cambiar"
+                  />
+                </div>
 
-              <div>
-                <label className="block text-sm font-medium text-[#2c2c2c] mb-2">
-                  Dirección
-                </label>
-                <input
-                  type="text"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleInputChange}
-                  className="w-full border border-[#e0e0e0] rounded-lg px-4 py-3"
-                  placeholder="Dejar vacío para no cambiar"
-                />
-              </div>
+                <div className="sm:col-span-2">
+                  <label className="block text-sm font-medium text-[#2c2c2c] mb-2">
+                    Dirección
+                  </label>
+                  <input
+                    type="text"
+                    name="address"
+                    value={formData.address}
+                    onChange={handleInputChange}
+                    className="w-full border border-[#e0e0e0] rounded-lg px-4 py-3"
+                    placeholder="Dejar vacío para no cambiar"
+                  />
+                </div>
 
-              <div>
-                <label className="block text-sm font-medium text-[#2c2c2c] mb-2">
-                  Código Postal
-                </label>
-                <input
-                  type="text"
-                  name="postal_code"
-                  value={formData.postal_code}
-                  onChange={handleInputChange}
-                  className="w-full border border-[#e0e0e0] rounded-lg px-4 py-3"
-                  placeholder="Dejar vacío para no cambiar"
-                />
-              </div>
+                <div>
+                  <label className="block text-sm font-medium text-[#2c2c2c] mb-2">
+                    Código Postal
+                  </label>
+                  <input
+                    type="text"
+                    name="postal_code"
+                    value={formData.postal_code}
+                    onChange={handleInputChange}
+                    className="w-full border border-[#e0e0e0] rounded-lg px-4 py-3"
+                    placeholder="Dejar vacío para no cambiar"
+                  />
+                </div>
 
-              <div>
-                <label className="block text-sm font-medium text-[#2c2c2c] mb-2">
-                  Ciudad
-                </label>
-                <input
-                  type="text"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleInputChange}
-                  className="w-full border border-[#e0e0e0] rounded-lg px-4 py-3"
-                  placeholder="Dejar vacío para no cambiar"
-                />
-              </div>
+                <div>
+                  <label className="block text-sm font-medium text-[#2c2c2c] mb-2">
+                    Ciudad
+                  </label>
+                  <input
+                    type="text"
+                    name="city"
+                    value={formData.city}
+                    onChange={handleInputChange}
+                    className="w-full border border-[#e0e0e0] rounded-lg px-4 py-3"
+                    placeholder="Dejar vacío para no cambiar"
+                  />
+                </div>
 
-              <div>
-                <label className="block text-sm font-medium text-[#2c2c2c] mb-2">
-                  Provincia
-                </label>
-                <input
-                  type="text"
-                  name="province"
-                  value={formData.province}
-                  onChange={handleInputChange}
-                  className="w-full border border-[#e0e0e0] rounded-lg px-4 py-3"
-                  placeholder="Dejar vacío para no cambiar"
-                />
+                <div>
+                  <label className="block text-sm font-medium text-[#2c2c2c] mb-2">
+                    Provincia
+                  </label>
+                  <input
+                    type="text"
+                    name="province"
+                    value={formData.province}
+                    onChange={handleInputChange}
+                    className="w-full border border-[#e0e0e0] rounded-lg px-4 py-3"
+                    placeholder="Dejar vacío para no cambiar"
+                  />
+                </div>
               </div>
             </>
           )}
 
-          {/* Campos específicos de trabajador - quitar required */}
+          {/* Campos específicos de trabajador */}
           {formData.role === 'worker' && (
-            <div>
+            <div className="sm:col-span-2">
               <label className="block text-sm font-medium text-[#2c2c2c] mb-2">
                 Rol del trabajador
               </label>
@@ -213,17 +215,17 @@ const EditUserPage = () => {
           )}
         </div>
 
-        <div className="flex justify-end gap-4 pt-6">
+        <div className="flex flex-col sm:flex-row justify-end gap-4 pt-6">
           <button
             type="button"
             onClick={() => navigate('/admin/users')}
-            className="px-6 py-2 border border-[#e0e0e0] rounded-lg text-[#6e6e6e]"
+            className="w-full sm:w-auto px-6 py-2 border border-[#e0e0e0] rounded-lg text-[#6e6e6e]"
           >
             Cancelar
           </button>
           <button
             type="submit"
-            className="px-6 py-2 bg-[#005bac] text-white rounded-lg hover:bg-[#004d91]"
+            className="w-full sm:w-auto px-6 py-2 bg-[#005bac] text-white rounded-lg hover:bg-[#004d91]"
           >
             Guardar Cambios
           </button>
