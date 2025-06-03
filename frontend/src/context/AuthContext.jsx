@@ -58,10 +58,18 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify({ email, password })
       });
 
-      const data = await response.json();
+      let data;
+      const textResponse = await response.text();
+      try {
+        data = JSON.parse(textResponse);
+      } catch (e) {
+        console.error('Error parsing response:', textResponse);
+        throw new Error('Invalid server response');
+      }
 
-      if (response.ok) {
-        await checkAuth(); // Verificar autenticación después del login
+      if (response.ok && data.success) {
+        setIsAuthenticated(true);
+        setUser(data.user);
         toast.success('Inicio de sesión exitoso');
         return { success: true, user: data.user };
       } else {

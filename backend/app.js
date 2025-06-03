@@ -1,6 +1,5 @@
 import express from 'express';
 import cors from 'cors';
-import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import userSchema from './src/models/schemas/user_schema.js';
 import workerRoutes from './src/routes/worker_routes.js';
@@ -31,11 +30,12 @@ app.use(cors({
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'x-csrf-token'],
-  exposedHeaders: ['*', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['*', 'Authorization'],
 }));
-app.use(bodyParser.json());
+
 app.use(cookieParser());
+app.use(express.json());
 
 async function createTables() {
   try {

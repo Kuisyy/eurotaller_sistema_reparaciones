@@ -55,15 +55,29 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Email y contraseña son requeridos' 
+      });
+    }
+
     const user = await userModel.getUserByEmail(email);
     
     if (!user) {
-      return res.status(404).json({ message: 'Usuario no encontrado' });
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Usuario no encontrado' 
+      });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: 'Contraseña incorrecta' });
+      return res.status(401).json({ 
+        success: false, 
+        message: 'Contraseña incorrecta' 
+      });
     }
 
     const token = jwt.sign(
@@ -75,12 +89,13 @@ const login = async (req, res) => {
     res.cookie('auth_token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'Lax',
-      maxAge: 24 * 60 * 60 * 1000, 
+      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+      maxAge: 24 * 60 * 60 * 1000,
       path: '/'
     });
 
-    return res.json({
+    return res.status(200).json({
+      success: true,
       message: 'Login exitoso',
       user: {
         userId: user.user_id,
@@ -90,7 +105,12 @@ const login = async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ message: 'Error en el servidor' });
+    console.error('Error en login:', error);
+    return res.status(500).json({ 
+      success: false, 
+      message: 'Error en el servidor',
+      error: error.message 
+    });
   }
 };
 

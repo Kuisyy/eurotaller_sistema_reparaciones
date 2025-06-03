@@ -11,8 +11,8 @@ class SeedData {
         );
         
         if (!adminExists) {
-          // Hash de la contraseña (admin123)
-          const hashedPassword = '$2a$12$zf/y6lUSxFaHtMv5izmXOO58RLS.z/2.Mj2/P39DxWbIjS8B1/ALK';
+          // Hash de la contraseña (admin)
+          const hashedPassword = '$2a$12$Kyo9dZiB00bkn1u/9h2n0e9PI5KbpMGXByCKJWbCE2TEIVuhOe4dS';
           
           const userResult = await t.one(`
             INSERT INTO users (name, email, password, role)
