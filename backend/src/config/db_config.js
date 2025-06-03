@@ -1,19 +1,15 @@
-import pgPromise from 'pg-promise';
-import { configDotenv } from 'dotenv';
+import pgp from 'pg-promise';
+import dotenv from 'dotenv';
 
-configDotenv();
+dotenv.config();
 
-const pgp = pgPromise();
-
-const cn = {
-     host: process.env.DB_HOST,
-     port: process.env.DB_PORT,
-     database: process.env.DB_NAME,
-     user: process.env.DB_USER,
-     password: process.env.DB_PASSWORD
-};
-
-const db = pgp(cn);
-
+const db = pgp()({
+  host: process.env.PGHOST || process.env.DB_HOST,
+  port: process.env.PGPORT || process.env.DB_PORT,
+  database: process.env.PGDATABASE || process.env.DB_NAME,
+  user: process.env.PGUSER || process.env.DB_USER,
+  password: process.env.PGPASSWORD || process.env.DB_PASSWORD,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+});
 
 export default db;
