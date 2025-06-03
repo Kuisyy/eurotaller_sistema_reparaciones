@@ -116,6 +116,8 @@ const WorkerPage = ({ className }) => {
                   <th className="flex-1 px-4 sm:px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Técnico</th>
                   <th className="hidden sm:table-cell flex-1 px-4 sm:px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Descripción</th>
                   <th className="w-32 px-4 sm:px-6 py-4 text-left text-sm font-semibold text-[#6e6e6e]">Estado</th>
+                  {/* Nueva columna para calificación */}
+                  <th className="w-32 px-4 sm:px-6 py-4 text-center text-sm font-semibold text-[#6e6e6e]">Valoración</th>
                   <th className="w-28 px-4 sm:px-6 py-4 text-center text-sm font-semibold text-[#6e6e6e]">Acciones</th>
                 </tr>
               </thead>
@@ -160,6 +162,24 @@ const WorkerPage = ({ className }) => {
                     <td className="w-32 px-4 sm:px-6 py-4">
                       <StatusBadge status={repair.status} />
                     </td>
+                    {/* Nueva celda para calificación */}
+                    <td className="w-32 px-4 sm:px-6 py-4">
+                      <div className="flex justify-center">
+                        {repair.status === 'Finalizado' ? (
+                          repair.rating ? (
+                            <StarRating
+                              rating={repair.rating}
+                              readonly={true}
+                            />
+                          ) : (
+                            <span className="text-sm text-[#6e6e6e]">Sin valorar</span>
+                          )
+                        ) : (
+                          <span className="text-sm text-[#6e6e6e]">Pendiente</span>
+                        )}
+                      </div>
+                    </td>
+                    
                     <td className="w-28 px-4 sm:px-6 py-4">
                       <div className="flex items-center justify-center gap-2">
                         <Link
