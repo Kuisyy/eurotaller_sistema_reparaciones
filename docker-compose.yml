@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   db:
     image: postgres:latest
@@ -12,11 +14,59 @@ services:
       - eurotaller_network
     volumes:
       - db_data:/var/lib/postgresql/data
-      - ./backend/src/config/init:/docker-entrypoint-initdb.d
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: eurotaller_backend
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=db
+      - DB_PORT=${DB_PORT:-5432}
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-luis123}
+      - DB_NAME=${DB_NAME:-eurotaller}
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    networks:
+      - eurotaller_network
+    depends_on:
+      db:
+        condition: service_healthy
     restart: unless-stopped
 
-volumes:
-  db_data:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: eurotaller_frontend
+    environment:
+      - VITE_API_URL=http://localhost:5000/
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - eurotaller_network
+    depends_on:
+      - backend
+    stdin_open: true
+    tty: true
+
 networks:
   eurotaller_network:
     driver: bridge
+
+volumes:
+  db_data:

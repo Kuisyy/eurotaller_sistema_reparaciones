@@ -16,6 +16,7 @@ import repairRoutes from './src/routes/repair_routes.js';
 import authRoutes from './src/routes/auth_routes.js';
 import userRoutes from './src/routes/user_routes.js';
 import ratingRoutes from './src/routes/rating_routes.js';
+import SeedData from './src/models/schemas/seed_data.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -30,9 +31,9 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-// Crear las tablas en el orden correcto
 async function createTables() {
   try {
+    console.log('Creando tablas...');
     await userSchema.createUserTable();
     await clientSchema.createClientTable();
     await workerSchema.createWorkerTable();
@@ -46,10 +47,21 @@ async function createTables() {
   }
 }
 
-// Llamar a la función de creación de tablas antes de iniciar el servidor
-createTables()
+async function initializeDatabase() {
+  try {
+    await createTables();
+    
+    console.log('Creando datos iniciales...');
+    await SeedData.createInitialData();
+    
+  } catch (error) {
+    console.error("Error al inicializar la base de datos:", error);
+    throw error;
+  }
+}
+
+initializeDatabase()
   .then(() => {
-    // Usa las rutas
     app.use('/user', userRoutes);
     app.use('/auth', authRoutes);
     app.use('/client', clientRoutes);
@@ -69,4 +81,5 @@ createTables()
   })
   .catch((error) => {
     console.error("Falló al iniciar el servidor:", error);
+    process.exit(1); 
   });
