@@ -25,8 +25,14 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(cors({
-  origin: 'http://localhost:5173', 
-  credentials: true
+  origin: [
+    'http://localhost:5173',
+    'https://eurotallerfrontend-production.up.railway.app'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-csrf-token'],
+  exposedHeaders: ['*', 'Authorization']
 }));
 app.use(bodyParser.json());
 app.use(cookieParser());

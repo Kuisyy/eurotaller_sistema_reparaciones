@@ -11,6 +11,11 @@ export default defineConfig({
     strictPort: true,
     watch: {
       usePolling: true  
-    }
+    },
+    allowedHosts: [
+      'localhost',
+      'eurotallerfrontend-production.up.railway.app',
+      '.railway.app' // Permite todos los subdominios de railway.app
+    ]
   }
 })
