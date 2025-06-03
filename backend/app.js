@@ -32,8 +32,6 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   exposedHeaders: ['*', 'Authorization'],
-  sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
-  secure: process.env.NODE_ENV === 'production'
 }));
 
 app.use(cookieParser());
