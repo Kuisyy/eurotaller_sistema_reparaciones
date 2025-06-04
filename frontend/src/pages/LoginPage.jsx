@@ -67,8 +67,6 @@ const LoginPage = () => {
     return (
       <div className="flex justify-center items-center h-screen">
         <div className="text-center">
-          <div className="spinner"></div>
-          <p>Verificando sesión...</p>
           <LoadingSpinner />
         </div>
       </div>
