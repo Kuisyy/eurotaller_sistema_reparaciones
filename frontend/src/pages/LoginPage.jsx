@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import tallerLogo from '../imgs/mechanic.png';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
+import LoadingSpinner from '../components/LoadingSpinner';
+
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -67,6 +69,7 @@ const LoginPage = () => {
         <div className="text-center">
           <div className="spinner"></div>
           <p className="mt-4">Verificando sesión...</p>
+          <LoadingSpinner />
         </div>
       </div>
     );
