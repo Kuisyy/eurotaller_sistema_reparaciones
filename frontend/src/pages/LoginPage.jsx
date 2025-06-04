@@ -118,7 +118,7 @@ const LoginPage = () => {
             <div className="relative w-full">
               <input
                 type={showPassword ? 'text' : 'password'}
-                className="bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-10 pl-4 flex flex-row gap-0 items-center justify-start self-stretch shrink-0 h-12 relative text-[#6e6e6e] text-left font-['Inter-Regular',_sans-serif] text-sm leading-[16.8px] font-normal"
+                className="w-full bg-[#ffffff] rounded-lg border-solid border-[#e0e0e0] border pr-12 pl-4 h-12 text-[#6e6e6e] text-left font-['Inter-Regular',_sans-serif] text-sm leading-[16.8px] font-normal"
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -127,7 +127,7 @@ const LoginPage = () => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3"
+                className="absolute right-4 top-1/2 -translate-y-1/2"
                 aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
               >
                 {showPassword ? <FiEyeOff className="text-[#005bac]" /> : <FiEye className="text-[#005bac]" />}
