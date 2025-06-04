@@ -68,7 +68,7 @@ const LoginPage = () => {
       <div className="flex justify-center items-center h-screen">
         <div className="text-center">
           <div className="spinner"></div>
-          <p className="mt-4">Verificando sesión...</p>
+          <p>Verificando sesión...</p>
           <LoadingSpinner />
         </div>
       </div>
