@@ -1,7 +1,7 @@
-# EuroTaller
+# API EuroTaller
 
 ## Descripción
-APP gestión de un taller de reparación de vehículos, que permite administrar usuarios, clientes, trabajadores, vehículos, reparaciones y valoraciones.
+APPpara la gestión de un taller de reparación de vehículos, que permite administrar usuarios, clientes, trabajadores, vehículos, reparaciones y valoraciones.
 
 ## 🚀 Características
 - Autenticación JWT mediante cookies
@@ -9,17 +9,21 @@ APP gestión de un taller de reparación de vehículos, que permite administrar 
 - Control de vehículos y reparaciones
 - Sistema de valoraciones
 - Arquitectura REST
-- Frontend reailzado con React y Tailwind CSS
+- Frontend en React con Tailwind CSS
 - Responsive
 
 ## 📋 Requisitos
 - Node.js >= 14.x
-- Base de datos (especificar motor utilizado)
+- PostgreSQL
 - NPM o Yarn
+- Docker y Docker Compose (opcional)
 
-🛠️ Instalación
-Opción 1: Con Docker Compose (Recomendado)
-bash# Clonar repositorio
+## 🛠️ Instalación
+
+### Opción 1: Con Docker Compose (Recomendado)
+
+```bash
+# Clonar repositorio
 git clone [URL_DEL_REPOSITORIO]
 cd eurotaller-api
 
@@ -28,8 +32,12 @@ docker-compose up -d
 
 # La aplicación estará disponible en http://localhost:3000
 # PostgreSQL estará disponible en localhost:5432
-Opción 2: Instalación Manual
-bash# Clonar repositorio
+```
+
+### Opción 2: Instalación Manual
+
+```bash
+# Clonar repositorio
 git clone [URL_DEL_REPOSITORIO]
 cd eurotaller-api
 
@@ -76,9 +84,13 @@ npm run dev
 # En otra terminal, iniciar frontend
 cd frontend
 npm run dev
-Configuración de Variables de Entorno
-Backend (.env en /backend)
-bashPORT=5000
+```
+
+### Configuración de Variables de Entorno
+
+#### Backend (.env en /backend)
+```bash
+PORT=5000
 DB_HOST=localhost
 DB_PORT=5432
 DB_USER=postgres
@@ -87,11 +99,22 @@ DB_NAME=eurotaller
 JWT_SECRET=luisjwt
 EMAIL_USER=eurotallerjoseluis@gmail.com
 EMAIL_APP_PASSWORD=lvkk chgv gpre vsje
-Frontend (.env en /frontend)
-bashVITE_API_URL=http://localhost:5000/
-Configuración de Base de Datos
+```
+
+#### Frontend (.env en /frontend)
+```bash
+VITE_API_URL=http://localhost:5000/
+```
+
+### Configuración de Base de Datos
+
 Asegúrate de tener PostgreSQL instalado y crear la base de datos:
-sqlCREATE DATABASE eurotaller;
+
+```sql
+CREATE DATABASE eurotaller;
+CREATE USER eurotaller_user WITH ENCRYPTED PASSWORD 'your_password';
+GRANT ALL PRIVILEGES ON DATABASE eurotaller TO eurotaller_user;
+```
 
 ## 🔑 Autenticación
 
@@ -467,7 +490,11 @@ DELETE /repair/:id
 **Parámetros URL:**
 - `id` (number) - ID de la reparación
 
+## ⭐ Valoraciones
 
+*Documentación pendiente de completar*
+
+---
 
 ## 📝 Códigos de Estado HTTP
 
@@ -493,6 +520,15 @@ Las respuestas de error siguen el siguiente formato:
 }
 ```
 
+## 🧪 Testing
+
+```bash
+# Ejecutar tests
+npm test
+
+# Ejecutar tests con coverage
+npm run test:coverage
+```
 
 ## 📁 Estructura del Proyecto
 
@@ -511,6 +547,13 @@ eurotaller-api/
 └── README.md
 ```
 
+## 🤝 Contribución
+
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)  
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
 
 ## 📄 Licencia
 
@@ -519,9 +562,9 @@ Este proyecto está bajo la Licencia [TIPO_DE_LICENCIA] - ver el archivo [LICENS
 ## 📞 Contacto
 
 - **Proyecto:** EuroTaller API
-- **Desarrollador:** Luis Maldonado Hernández
-- **Email:** luis3valderrubio@gmail.com
-- **Repositorio:** https://github.com/Kuisyy/eurotaller_sistema_reparaciones
+- **Desarrollador:** [Tu Nombre]
+- **Email:** [tu@email.com]
+- **Repositorio:** [URL_DEL_REPOSITORIO]
 
 ---
 
