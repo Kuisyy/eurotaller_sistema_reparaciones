@@ -520,15 +520,6 @@ Las respuestas de error siguen el siguiente formato:
 }
 ```
 
-## 🧪 Testing
-
-```bash
-# Ejecutar tests
-npm test
-
-# Ejecutar tests con coverage
-npm run test:coverage
-```
 
 ## 📁 Estructura del Proyecto
 
